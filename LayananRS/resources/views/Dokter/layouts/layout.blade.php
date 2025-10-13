@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Panel Dokter') - Klinik Sehat</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Alpine.js for interactivity -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div x-data="{ sidebarOpen: false, sidebarMinimized: false }" class="flex h-screen bg-gray-100">
+        <!-- ===== Overlay for mobile ===== -->
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity lg:hidden" x-cloak></div>
+
+        <!-- ===== Sidebar ===== -->
+        <aside
+            x-cloak
+            class="fixed inset-y-0 left-0 z-30 h-full overflow-y-auto bg-white border-r transform transition-all duration-300 ease-in-out lg:translate-x-0"
+            :class="{
+                'translate-x-0': sidebarOpen,
+                '-translate-x-full': !sidebarOpen,
+                'w-64 px-4 py-8': !sidebarMinimized,
+                'w-20 px-2 py-8': sidebarMinimized
+            }">
+
+            <div class="flex items-center justify-between" :class="{'px-2': !sidebarMinimized}">
+                <a href="#" class="text-2xl font-bold text-blue-600" :class="{'hidden': sidebarMinimized}">Panel Dokter</a>
+                <a href="#" class="text-2xl font-bold text-blue-600" :class="{'hidden': !sidebarMinimized}">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </a>
+                <button @click="sidebarOpen = false" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <nav class="mt-8">
+                {{-- Dashboard --}}
+                <a href="{{ route('dokter') }}" class="flex items-center py-2 mt-4 rounded-md"
+                   :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('dokter') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('dokter') ? 'true' : 'false' }}
+                   }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span class="mx-4" :class="{'lg:hidden': sidebarMinimized}">Dashboard</span>
+                </a>
+
+                {{-- Jadwal Saya --}}
+                <a href="{{ route('dokter.jadwal.saya') }}" class="flex items-center py-2 mt-4 rounded-md"
+                   :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('dokter.jadwal.saya') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('dokter.jadwal.saya') ? 'true' : 'false' }}
+                   }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="mx-4" :class="{'lg:hidden': sidebarMinimized}">Jadwal Saya</span>
+                </a>
+
+                {{-- Riwayat Pasien --}}
+                <a href="{{ route('dokter.riwayat.pasien') }}" class="flex items-center py-2 mt-4 rounded-md"
+                   :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('dokter.riwayat.pasien') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('dokter.riwayat.pasien') ? 'true' : 'false' }}
+                   }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"></path></svg>
+                    <span class="mx-4" :class="{'lg:hidden': sidebarMinimized}">Riwayat Pasien</span>
+                </a>
+
+                {{-- Profil Saya --}}
+               <a href="{{ route('dokter.profile.saya') }}" class="flex items-center py-2 mt-4 rounded-md"
+                   :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('dokter.profile.saya') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('dokter.profile.saya') ? 'true' : 'false' }}
+                   }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <span class="mx-4" :class="{'lg:hidden': sidebarMinimized}">Profil Saya</span>
+                </a>
+
+                 {{-- Notifikasi --}}
+                <a href="{{ route('dokter.notifikasi') }}" class="flex items-center py-2 mt-4 rounded-md"
+                   :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('dokter.notifikasi') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('dokter.notifikasi') ? 'true' : 'false' }}
+                   }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    <span class="mx-4" :class="{'lg:hidden': sidebarMinimized}">Notifikasi</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- ===== Main Content Wrapper ===== -->
+        <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out" :class="{'lg:ml-64': !sidebarMinimized, 'lg:ml-20': sidebarMinimized}">
+            <!-- ===== Header ===== -->
+            <header class="flex justify-between items-center p-6 bg-white border-b">
+                <div class="flex items-center">
+                    <!-- Mobile Hamburger -->
+                    <button @click="sidebarOpen = !sidebarOpen" class="text-gray-500 focus:outline-none lg:hidden">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <!-- Desktop Minimize Toggle -->
+                    <button @click="sidebarMinimized = !sidebarMinimized" class="hidden lg:block text-gray-500 hover:text-gray-700 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                     <!-- Profile dropdown -->
+                    <div x-data="{ dropdownOpen: false }" class="relative">
+                        <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2 focus:outline-none">
+                            <span class="hidden md:inline-block font-medium">Dr. Budi Santoso</span>
+                            <img class="h-8 w-8 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/4A5568?text=D" alt="Your avatar">
+                        </button>
+                        <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
+                            <form action="{{ route('logout') }}" method="POST" class="inline">
+                                @csrf
+                            </form>
+                            <a href="#" onclick="event.preventDefault(); this.previousElementSibling.submit();  " class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ===== Main Content Area ===== -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+                <div class="container mx-auto">
+                    @yield('content')
+                </div>
+            </main>
+        </div>
+    </div>
+
+    @stack('scripts')
+</body>
+</html>
+

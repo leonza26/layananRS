@@ -1,0 +1,41 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* Light gray background, similar to landing page's lighter sections */
+}
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* Ensure footer is at bottom if content is short */
+}
+.login-form-container {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('https://placehold.co/1000x700/A3BFFA/FFFFFF?text=Login+Background&font=Inter&alpha=0.1');
+    background-size: cover;
+    background-position: center;
+}
+.form-input {
+    transition: all 0.3s ease-in-out;
+}
+.form-input:focus {
+    border-color: #6366F1; /* Indigo */
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+.gradient-text {
+    background: linear-gradient(to right, #6366F1, #EC4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+ /* Custom scrollbar for a more modern feel */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #e0e0e0; /* Lighter track for login page */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #a0a0a0; /* Slightly lighter thumb */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
