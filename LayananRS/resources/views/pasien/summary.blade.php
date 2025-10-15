@@ -57,7 +57,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold text-gray-700 mb-4">Aksi Cepat</h3>
             <div class="space-y-3">
-                <a href="#" class="block w-full text-center px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600">Booking Janji Temu Baru</a>
+                <a href="{{ route('pasien.booking') }}" class="block w-full text-center px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600">Booking Janji Temu Baru</a>
                 <a href="#" class="block w-full text-center px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200">Lihat Semua Riwayat</a>
             </div>
         </div>

@@ -74,6 +74,10 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
             Route::get('/summary', 'index')->name('pasien');
             // profile saya
             Route::get('/profile_saya', 'profileSaya')->name('pasien.profile.saya');
+            // riwayat
+            Route::get('/riwayat', 'riwayat')->name('pasien.riwayat');
+            // booking
+            Route::get('/booking', 'booking')->name('pasien.booking');
 
         });
 

@@ -57,7 +57,7 @@
                         @elseif (Auth::user()->role === 1)
                             <a href="{{ url('/dokter/dashboard') }}" class="block w-full text-center mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg">Dashboard Dokter</a>
                         @elseif (Auth::user()->role === 2)
-                            <a href="{{ url('/pasien/dashboard') }}" class="block w-full text-center mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg">Akun Saya</a>
+                            <a href="{{ url('/pasien/summary') }}" class="block w-full text-center mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg">Akun Saya</a>
                         @endif
                     @else
                         {{-- Jika belum login, tampilkan link Login dan Register --}}

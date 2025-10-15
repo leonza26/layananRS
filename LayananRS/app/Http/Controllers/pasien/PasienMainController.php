@@ -19,5 +19,16 @@ class PasienMainController extends Controller
         return view('pasien.profile');
     }
 
+    // riwayat
+    public function riwayat()
+    {
+        return view('pasien.riwayat_janjitemu');
+    }
+
+    // booking
+    public function booking()
+    {
+        return view('pasien.booking_dokter');
+    }
 
 }
