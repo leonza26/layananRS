@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Counter;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -9,12 +10,18 @@ use App\Http\Controllers\dokter\DokterMainController;
 use App\Http\Controllers\pasien\PasienMainController;
 
 
+Route::get('/counter', Counter::class);
+Route::get('/users', function () {
+    return view('BelajarLivewire.users');
+});
+
 Route::controller(LandingpageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
     Route::get('/daftar_dokter', 'daftarDokter')->name('daftar.dokter');
     Route::get('/riwayat', 'riwayat')->name('riwayat');
     Route::get('/jadwal_dokter', 'jadwalDokter')->name('jadwal.dokter');
     Route::get('/booking_dokter', 'bookingDokter')->name('booking.dokter');
+
 
 
 });
