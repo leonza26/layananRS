@@ -52,4 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Store::class);
     }
+
+    // relasi ke dokter
+    public function dokter()
+    {
+        return $this->hasOne(Dokter::class);
+    }
 }

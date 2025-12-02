@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DokterSeeder extends Seeder
@@ -13,9 +12,9 @@ class DokterSeeder extends Seeder
     public function run(): void
     {
         // create akun dokter
-        \App\Models\User::factory()->create([
+        \App\Models\User::updateOrCreate([
             'name' => 'dr. John Doe',
-            'email' => 'john.doe@example.com',
+            'email' => 'john.doe@rs.com',
             'password' => 'password123#',
             'role' => '1',
         ]);
