@@ -3,44 +3,55 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdminMainController extends Controller
 {
     //
-    public function admin(){
+    public function admin()
+    {
         return view('admin.dashboard');
     }
 
     // manage dokter
-    public function manageDokter(){
-        return view('admin.manage.manage_dokter');
+    public function manageDokter()
+    {
+        $doctors = User::where('role', '1')->get();
+
+        return view('admin.manage.manage_dokter', compact('doctors'));
     }
 
     // tambah dokter
-    public function tambahDokter(){
+    public function tambahDokter()
+    {
+
         return view('admin.manage.tambah_dokter');
     }
 
-
     // manage pasien
-    public function managePasien(){
-        return view('admin.manage.manage_pasien');
+    public function managePasien()
+    {
+        $patients = User::where('role', '2')->get();
+
+        return view('admin.manage.manage_pasien', compact('patients'));
     }
 
     // manage janji temu
-    public function manageJanjitemu(){
-        return view('admin.manage.manage_janjitemu');
+    public function manageJanjitemu()
+    {
+
+        return view('admin.manage.manage_janjitemu', compact('appointments'));
     }
 
     // laporan & analitik
-    public function laporanAnalitik(){
+    public function laporanAnalitik()
+    {
         return view('admin.laporan');
     }
 
     // setting
-    public function setting(){
+    public function setting()
+    {
         return view('admin.settings');
     }
-
 }
