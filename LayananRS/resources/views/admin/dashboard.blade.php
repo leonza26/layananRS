@@ -37,7 +37,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Pasien Terdaftar</p>
-                    <p class="text-2xl font-bold text-gray-900">3,456</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $patient_amount }}</p>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Dokter Aktif</p>
-                    <p class="text-2xl font-bold text-gray-900">42</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $doctor_amount }}</p>
                 </div>
             </div>
         </div>

@@ -10,8 +10,6 @@ class Users extends Component
 {
     public $welcome = 'Welcome to the Users component!';
 
-
-
     // membuat properti form create user
     public $name = '', $role = '', $email = '', $password = '';
 
@@ -40,8 +38,6 @@ class Users extends Component
 
     // membuat properti pencarian
     public $searchTerm = '';
-
-
 
     public function render()
     {
