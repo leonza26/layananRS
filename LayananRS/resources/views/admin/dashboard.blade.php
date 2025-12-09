@@ -126,3 +126,31 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        const ctx = document.getElementById('bookingChart').getContext('2d');
+        const bookingChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['30 Sep', '01 Okt', '02 Okt', '03 Okt', '04 Okt', '05 Okt', '06 Okt'],
+                datasets: [{
+                    label: 'Janji Temu',
+                    data: [12, 19, 15, 25, 22, 18, 20],
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+@endpush

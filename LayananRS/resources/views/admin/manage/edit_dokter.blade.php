@@ -5,7 +5,7 @@
 
 @section('admin_content')
 
-    <div class="py-12">
+    <div class="py-5">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -55,44 +55,14 @@
                                         <div>
                                             <label for="email" class="block text-sm font-medium text-gray-700">Alamat
                                                 Email</label>
-                                            <input type="email" name="email" id="email" value="{{ old('email', $doctor->user->email) }}"
-                                                placeholder="dokter@kliniksehat.com" required
+                                            <input type="email" name="email" id="email"
+                                                value="{{ old('email', $doctor->user->email) }}" placeholder="dokter@kliniksehat.com"
+                                                required
                                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('email') border-red-500 @enderror">
                                             @error('email')
                                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                             @enderror
                                         </div>
-
-                                        <!-- Password -->
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label for="password"
-                                                    class="block text-sm font-medium text-gray-700">Password Baru</label>
-                                                <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah password.</p>
-                                                <input type="password" name="password" id="password"
-                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('password') border-red-500 @enderror">
-                                                @error('password')
-                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                                @enderror
-                                                <div class="mt-2">
-                                                    <input type="checkbox" id="show_password"
-                                                        onclick="togglePasswordVisibility()">
-                                                    <label for="show_password" class="text-sm text-gray-600">Tampilkan
-                                                        Password</label>
-                                                </div>
-                                            </div>
-
-                                            <!-- Password Confirmation -->
-                                            <div>
-                                                <label for="password_confirmation"
-                                                    class="block text-sm font-medium text-gray-700">Konfirmasi
-                                                    Password</label>
-                                                <input type="password" name="password_confirmation"
-                                                    id="password_confirmation" required
-                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                            </div>
-                                        </div>
-
 
                                     </div>
                                 </div>
@@ -155,11 +125,11 @@
                                 <div
                                     class="mt-1 flex justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md bg-gray-50 hover:bg-gray-100 transition min-h-[200px]">
                                     <!-- Tampilkan foto yang ada atau placeholder -->
-                                    <img id="image-preview"
-                                         src="{{ $doctor->photo ? asset('storage/' . $doctor->photo) : '#' }}"
-                                         alt="Pratinjau Gambar"
-                                         class="{{ $doctor->photo ? '' : 'hidden' }} max-h-48 rounded-md shadow-sm" />
-                                    <div id="image-upload-placeholder" class="space-y-1 text-center {{ $doctor->photo ? 'hidden' : '' }}">
+                                    <img id="image-preview" src="{{ $doctor->photo_url ?? '#' }}"
+                                        alt="Pratinjau Gambar"
+                                        class="{{ $doctor->photo_url ? '' : 'hidden' }} max-h-48 rounded-md shadow-sm" />
+                                    <div id="image-upload-placeholder"
+                                        class="space-y-1 text-center {{ $doctor->photo_url ? 'hidden' : '' }}">
                                          <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
                                             viewBox="0 0 48 48">
                                             <path

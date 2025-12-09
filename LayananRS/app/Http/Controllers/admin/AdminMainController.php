@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -54,7 +55,7 @@ class AdminMainController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => bcrypt($request->password),
+                'password' => Hash::make($request->password),
                 'role' => '1', // role 1 untuk dokter
             ]);
 
@@ -88,7 +89,7 @@ class AdminMainController extends Controller
     // edit dokter
     public function editDokter($id)
     {
-        $doctor = User::where('role', '1')->findOrFail($id);
+        $doctor = Dokter::where('user_id', $id)->with('user')->firstOrFail();
 
        return view('admin.manage.edit_dokter', compact('doctor'));
     }
@@ -96,17 +97,11 @@ class AdminMainController extends Controller
     // update dokter
     public function updateDokter(Request $request, $id)
     {
+
         // validasi input data dokter
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($id),
-            ],
-            'password' => 'nullable|string|min:8|confirmed',
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
             'specialization' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -116,21 +111,24 @@ class AdminMainController extends Controller
         try {
             DB::beginTransaction();
 
+            $doctor = Dokter::where('user_id', $id)->firstOrFail();
+
             $user = User::findOrFail($id);
             $user->name = $request->name;
             $user->email = $request->email;
+
             if ($request->filled('password')) {
-                $user->password = bcrypt($request->password);
+                $user->password = Hash::make($request->password);
             }
             $user->save();
 
-            $photoUrl = $user->dokter->photo_url;
+            $photoUrl = $doctor->photo_url;
             if ($request->hasFile('photo')) {
                 $photoPath = $request->file('photo')->store('doctor_photos', 'public');
                 $photoUrl = asset('storage/' . $photoPath);
             }
 
-            $user->dokter()->update([
+            $doctor->update([
                 'specialization' => $request->specialization,
                 'biography' => $request->biography,
                 'photo_url' => $photoUrl,
@@ -171,9 +169,8 @@ class AdminMainController extends Controller
     // manage pasien
     public function managePasien()
     {
-        $patients = User::where('role', '2')->get();
 
-        return view('admin.manage.manage_pasien', compact('patients'));
+        return view('admin.manage.manage_pasien');
     }
 
     public function deletePasien($id)

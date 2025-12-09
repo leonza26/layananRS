@@ -38,6 +38,10 @@
                             Data Akun Login
                         </h4>
                         <div class="grid grid-cols-1 gap-4">
+
+                            {{-- role --}}
+
+
                             <!-- Nama -->
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap & Gelar</label>

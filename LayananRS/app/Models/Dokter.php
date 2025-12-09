@@ -21,5 +21,23 @@ class Dokter extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Relasi One-to-Many ke Schedules
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    // Relasi One-to-Many ke Appointments
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    // Relasi One-to-Many ke Reviews
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
 
 }

@@ -14,4 +14,21 @@ class Pasien extends Model
         'address',
     ];
 
+    // Relasi balik ke User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relasi One-to-Many ke Appointments
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+     // Relasi One-to-Many ke Reviews
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

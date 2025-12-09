@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -58,4 +59,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Dokter::class);
     }
+
+
+    // Relasi One-to-One ke Patient
+    public function pasien()
+    {
+        return $this->hasOne(Pasien::class);
+    }
+
 }

@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Pasien;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
 class UserSeeder extends Seeder
 {
@@ -12,23 +17,26 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // //
-        // \App\Models\User::factory(10)->create();
+        $faker = Faker::create('id_ID');
 
-        // // cretae admin user
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Admin User',
-        //     'email' => 'admin@example.com',
-        //     'password' => 'admin123#',
-        //     'role' => '0',
-        // ]);
+        DB::transaction(function () use ($faker) {
+            // create 1 admin user
+            User::create([
+                'name' => 'Admin User',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('admin123#'),
+                'role' => '0', // Role 0 untuk Admin
+            ]);
 
-        // create pasien user
-        \App\Models\User::factory()->create([
-            'name' => 'Pasien User',
-            'email' => 'pasien@example.com',
-            'password' => 'pasien123#',
-            'role' => '2',
-        ]);
+            // create 20 dummy patient users
+            for ($i = 0; $i < 20; $i++) {
+                $user = User::create([
+                    'name' => $faker->name(),
+                    'email' => $faker->unique()->safeEmail(),
+                    'password' => Hash::make('password'), // password default
+                    'role' => '2', // Role 2 untuk Pasien
+                ]);
+            }
+        });
     }
 }
