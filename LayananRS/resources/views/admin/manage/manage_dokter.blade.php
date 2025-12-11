@@ -30,7 +30,7 @@
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Biography
                         </th>
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -46,17 +46,19 @@
                                 {{ $doctor->dokter->specialization ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $doctor->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($doctor->email_verified_at)
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
-                                @else
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Pending</span>
-                                @endif
+                                <div class="text-sm text-gray-500 truncate max-w-xs">
+                                    {{ $doctor->dokter->biography ?? '-' }}
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                <a href="#" class="text-red-600 hover:text-red-900">Hapus</a>
+
+                                <a href="{{ route('admin.edit.dokter', $doctor->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+
+                                <form action="{{ route('admin.delete.dokter', $doctor->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin menghapus dokter ini?')">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach

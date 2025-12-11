@@ -6,19 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('admin_page_title')</title>
 
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Alpine.js for interactivity -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Chart.js for graphs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         body {
@@ -29,6 +23,8 @@
             display: none !important;
         }
     </style>
+
+    @livewireStyles
 </head>
 
 <body class="bg-gray-100">
@@ -123,39 +119,39 @@
 
                 {{-- manage appointment --}}
 
-                 <a href="{{ route('admin.manage.janjitemu') }}" class="flex items-center py-2 mt-4 rounded-md"
+                <a href="{{ route('admin.manage.janjitemu') }}" class="flex items-center py-2 mt-4 rounded-md"
                     :class="{
                         'px-4': !sidebarMinimized,
                         'justify-center px-2': sidebarMinimized,
                         'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('admin.manage.janjitemu') ? 'true' : 'false' }},
                         'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('admin.manage.janjitemu') ? 'true' : 'false' }}
                     }">
-                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                         </path>
                     </svg>
-                     <span class="mx-4" :class="{ 'lg:hidden': sidebarMinimized }">Manajemen Janji Temu</span>
+                    <span class="mx-4" :class="{ 'lg:hidden': sidebarMinimized }">Manajemen Janji Temu</span>
                 </a>
 
 
                 {{-- reports --}}
 
-                 <a href="{{ route('admin.laporan.analitik') }}" class="flex items-center py-2 mt-4 rounded-md"
+                <a href="{{ route('admin.laporan.analitik') }}" class="flex items-center py-2 mt-4 rounded-md"
                     :class="{
                         'px-4': !sidebarMinimized,
                         'justify-center px-2': sidebarMinimized,
                         'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('admin.laporan.analitik') ? 'true' : 'false' }},
                         'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('admin.laporan.analitik') ? 'true' : 'false' }}
                     }">
-                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                         </path>
                     </svg>
-                     <span class="mx-4" :class="{ 'lg:hidden': sidebarMinimized }">Laporan & Analitik</span>
+                    <span class="mx-4" :class="{ 'lg:hidden': sidebarMinimized }">Laporan & Analitik</span>
                 </a>
 
 
@@ -199,7 +195,7 @@
                         </svg>
                     </button>
 
-                    <div class="relative mx-4">
+                    {{-- <div class="relative mx-4">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <svg class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none">
                                 <path
@@ -210,7 +206,8 @@
                         </span>
                         <input class="w-32 sm:w-64 form-input rounded-md pl-10 pr-4" type="text"
                             placeholder="Search">
-                    </div>
+                    </div> --}}
+
                 </div>
 
                 <div class="flex items-center space-x-4">
@@ -242,33 +239,11 @@
         </div>
     </div>
 
-    <script>
-        const ctx = document.getElementById('bookingChart').getContext('2d');
-        const bookingChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['30 Sep', '01 Okt', '02 Okt', '03 Okt', '04 Okt', '05 Okt', '06 Okt'],
-                datasets: [{
-                    label: 'Janji Temu',
-                    data: [12, 19, 15, 25, 22, 18, 20],
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                    borderColor: 'rgba(59, 130, 246, 1)',
-                    borderWidth: 2,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
 
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @stack('scripts')
+    @livewireScripts
 </body>
 
 </html>

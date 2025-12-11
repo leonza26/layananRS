@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('biography')->nullable();
             $table->string('photo_url')->nullable();
             $table->decimal('consultaion_fee', 10,2);
+
             $table->timestamps();
         });
     }

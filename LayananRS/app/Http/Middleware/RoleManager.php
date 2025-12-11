@@ -26,39 +26,29 @@ class RoleManager
         // menegcek apakah ada autentikasi login berdasarkana role
         $authUserRole = Auth::user()->role;
 
-        switch($role){
-            case 'admin';
-            if($authUserRole == 0){
-                return $next($request);
-            }
-            break;
+        $roles = [
+            'admin' => 0,
+            'dokter' => 1,
+            'pasien' => 2,
+        ];
 
-            case 'dokter';
-            if($authUserRole == 1){
-                return $next($request);
-            }
-            break;
-
-            case 'pasien';
-            if($authUserRole == 2){
-                return $next($request);
-            }
-            break;
-
-
+        if (isset($roles[$role]) && $authUserRole == $roles[$role]) {
+            return $next($request);
         }
 
 
         // mengarahkan role ke halaman route
         switch($authUserRole){
             case 0;
-            return redirect()->route('admin');
+                return redirect()->route('admin');
 
             case 1;
-            return redirect()->route('dokter');
+                return redirect()->route('dokter');
 
             case 2;
-            return redirect()->route('pasien');
+                return redirect()->route('pasien');
+            default:
+                return redirect()->route('home'); // fallback
         }
 
 

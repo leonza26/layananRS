@@ -37,7 +37,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Pasien Terdaftar</p>
-                    <p class="text-2xl font-bold text-gray-900">3,456</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $patient_amount }}</p>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Dokter Aktif</p>
-                    <p class="text-2xl font-bold text-gray-900">42</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $doctor_amount }}</p>
                 </div>
             </div>
         </div>
@@ -126,3 +126,31 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        const ctx = document.getElementById('bookingChart').getContext('2d');
+        const bookingChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['30 Sep', '01 Okt', '02 Okt', '03 Okt', '04 Okt', '05 Okt', '06 Okt'],
+                datasets: [{
+                    label: 'Janji Temu',
+                    data: [12, 19, 15, 25, 22, 18, 20],
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+@endpush

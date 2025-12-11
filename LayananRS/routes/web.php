@@ -1,14 +1,12 @@
 <?php
 
-use App\Livewire\Counter;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\admin\AdminMainController;
 use App\Http\Controllers\dokter\DokterMainController;
+use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\pasien\PasienMainController;
-
+use App\Http\Controllers\ProfileController;
+use App\Livewire\Counter;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/counter', Counter::class);
 Route::get('/users', function () {
@@ -22,10 +20,7 @@ Route::controller(LandingpageController::class)->group(function () {
     Route::get('/jadwal_dokter', 'jadwalDokter')->name('jadwal.dokter');
     Route::get('/booking_dokter', 'bookingDokter')->name('booking.dokter');
 
-
-
 });
-
 
 // admin routes
 Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () {
@@ -33,21 +28,30 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
         Route::controller(AdminMainController::class)->group(function () {
             Route::get('/dashboard', 'admin')->name('admin');
 
-            // manage dokter
+            // manage
             Route::get('/manage_dokter', 'manageDokter')->name('admin.manage.dokter');
-            // tambah dokter
+
+            // view tambah dokter
             Route::get('/tambah_dokter', 'tambahDokter')->name('admin.tambah.dokter');
-            // manage pasien
+            // tambah dokter
+            Route::post('/store_dokter', 'storeDokter')->name('admin.store.dokter');
+            // edit dokter
+            Route::get('/edit_dokter/{id}', 'editDokter')->name('admin.edit.dokter');
+            // update dokter
+            Route::put('/update_dokter/{id}', 'updateDokter')->name('admin.update.dokter');
+            // hapus dokter
+            Route::delete('/delete_dokter/{id}', 'deleteDokter')->name('admin.delete.dokter');
+
             Route::get('/manage_pasien', 'managePasien')->name('admin.manage.pasien');
-            // manage janji temu
+
+            // deleyte pasien
+            Route::delete('/delete_pasien/{id}', 'deletePasien')->name('admin.delete.pasien');
+
             Route::get('/manage_janjitemu', 'manageJanjitemu')->name('admin.manage.janjitemu');
-            // laporan & analitik
             Route::get('/laporan_analitik', 'laporanAnalitik')->name('admin.laporan.analitik');
-            // setting
             Route::get('/setting', 'setting')->name('admin.setting');
 
         });
-
 
     });
 });
@@ -69,7 +73,6 @@ Route::middleware(['auth', 'verified', 'rolemanager:dokter'])->group(function ()
 
         });
 
-
     });
 });
 
@@ -88,15 +91,13 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
 
         });
 
-
     });
 });
 
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 require __DIR__.'/auth.php';
