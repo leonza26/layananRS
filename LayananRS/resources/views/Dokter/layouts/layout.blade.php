@@ -77,6 +77,20 @@
                     <span class="mx-4" :class="{'lg:hidden': sidebarMinimized}">Jadwal Saya</span>
                 </a>
 
+                {{-- Daftar Janji Temu --}}
+                <a href="{{ route('dokter.janji.pasien') }}" class="flex items-center py-2 mt-4 rounded-md"
+                   :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('dokter.janji.pasien') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('dokter.janji.pasien') ? 'true' : 'false' }}
+                   }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="mx-4" :class="{'lg:hidden': sidebarMinimized}">Daftar Janji Temu</span>
+                </a>
+
+
+
                 {{-- Riwayat Pasien --}}
                 <a href="{{ route('dokter.riwayat.pasien') }}" class="flex items-center py-2 mt-4 rounded-md"
                    :class="{
@@ -136,7 +150,7 @@
                      <!-- Profile dropdown -->
                     <div x-data="{ dropdownOpen: false }" class="relative">
                         <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2 focus:outline-none">
-                            <span class="hidden md:inline-block font-medium">Dr. Budi Santoso</span>
+                            <span class="hidden md:inline-block font-medium">{{ Auth::user()->name }}</span>
                             <img class="h-8 w-8 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/4A5568?text=D" alt="Your avatar">
                         </button>
                         <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
