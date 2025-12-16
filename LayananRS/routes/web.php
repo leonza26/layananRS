@@ -64,6 +64,10 @@ Route::middleware(['auth', 'verified', 'rolemanager:dokter'])->group(function ()
 
             // jadwal saya
             Route::get('/jadwal_saya', 'jadwalSaya')->name('dokter.jadwal.saya');
+            // store jadwal
+            Route::post('/jadwal_saya', 'storeJadwal')->name('dokter.store.jadwal');
+            // daftar janji temu
+            Route::get('/daftar_janjitemu', 'daftarJanjitemu')->name('dokter.janji.pasien');
             //  riwayat pasien
             Route::get('/riwayat_pasien', 'riwayatPasien')->name('dokter.riwayat.pasien');
             // profile saya

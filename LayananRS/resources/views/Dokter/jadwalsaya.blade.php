@@ -26,7 +26,8 @@
 
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Tambah Slot Jadwal Baru</h3>
 
-                <form action="#" method="POST" class="space-y-4">
+                <form action="{{ route('dokter.store.jadwal') }}" method="POST" class="space-y-4">
+                    @csrf
                     <div>
                         <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
                         <input type="date" id="date" name="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -65,6 +66,12 @@
             </button>
         </div>
 
+        @if(session('success'))
+        <div class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+        @endif
+
         <!-- Kalender -->
         <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
             <!-- Header Kalender -->
@@ -73,7 +80,7 @@
                     <button class="p-2 rounded-full hover:bg-gray-100">
                         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <h4 class="text-lg font-semibold text-gray-700">Oktober 2025</h4>
+                    <h4 class="text-lg font-semibold text-gray-700">{{ $startOfMonth->isoFormat('MMMM Y') }}</h4>
                     <button class="p-2 rounded-full hover:bg-gray-100">
                         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
@@ -92,40 +99,33 @@
                 <div class="text-center py-2 bg-gray-50 text-xs font-medium text-gray-500 uppercase">Sab</div>
 
                 <!-- Baris Tanggal -->
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="text-sm text-gray-400">28</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="text-sm text-gray-400">29</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="text-sm text-gray-400">30</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="font-semibold">1</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="font-semibold">2</span>
-                    <div class="mt-1 text-xs bg-blue-100 text-blue-800 rounded px-1 cursor-pointer">09:00 - 12:00</div>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="font-semibold">3</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="font-semibold">4</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="font-semibold">5</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto">
-                    <span class="font-semibold">6</span>
-                </div>
-                <div class="bg-white h-32 p-2 overflow-y-auto relative">
-                     <span class="font-semibold text-white bg-blue-600 rounded-full h-6 w-6 flex items-center justify-center">7</span>
-                    <div class="mt-1 text-xs bg-green-100 text-green-800 rounded px-1 cursor-pointer">13:00 - 17:00</div>
-                    <div class="mt-1 text-xs bg-red-100 text-red-800 rounded px-1 cursor-pointer">Andi (14:00)</div>
-                </div>
-                <!-- Tanggal lainnya -->
+                @php
+                    $daysInMonth = $startOfMonth->daysInMonth;
+                    $firstDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Minggu) - 6 (Sabtu)
+                @endphp
+
+                {{-- Slot kosong sebelum tanggal 1 --}}
+                @for ($i = 0; $i < $firstDayOfWeek; $i++)
+                    <div class="bg-white h-32 p-2 bg-gray-50"></div>
+                @endfor
+
+                {{-- Loop tanggal dalam bulan --}}
+                @for ($day = 1; $day <= $daysInMonth; $day++)
+                    @php
+                        $currentDate = $startOfMonth->copy()->addDays($day - 1);
+                        $dateString = $currentDate->format('Y-m-d');
+                        $daySchedules = $schedules->where('date', $dateString);
+                        $isToday = $currentDate->isToday();
+                    @endphp
+                    <div class="bg-white h-32 p-2 overflow-y-auto border-t border-l border-gray-100 {{ $isToday ? 'bg-blue-50' : '' }}">
+                        <span class="font-semibold {{ $isToday ? 'text-blue-600' : 'text-gray-700' }}">{{ $day }}</span>
+                        @foreach ($daySchedules as $schedule)
+                            <div class="mt-1 text-xs bg-blue-100 text-blue-800 rounded px-1 cursor-pointer hover:bg-blue-200" title="Jadwal Praktik">
+                                {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
+                            </div>
+                        @endforeach
+                    </div>
+                @endfor
 
             </div>
         </div>

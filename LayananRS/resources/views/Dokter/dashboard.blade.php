@@ -6,8 +6,8 @@
     <!-- Header Konten -->
     <div class="flex flex-col sm:flex-row justify-between items-start">
         <div>
-            <h3 class="text-2xl font-semibold text-gray-700">Selamat Datang, Dr. Budi Santoso!</h3>
-            <p class="text-gray-500 mt-1">Selasa, 7 Oktober 2025</p>
+            <h3 class="text-2xl font-semibold text-gray-700">Selamat Datang, {{ Auth::user()->name }}!</h3>
+            <p class="text-gray-500 mt-1">Hari {{ now()->isoFormat('dddd, DD MMMM Y') }}</p>
         </div>
     </div>
 

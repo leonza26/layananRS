@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Http\Controllers\Controller;
+
 class LandingpageController extends Controller
 {
     //
@@ -14,7 +17,8 @@ class LandingpageController extends Controller
     // daftar dokter page
     public function daftarDokter()
     {
-        return view('Landing.daftar_dokter');
+        $dokters = User::where('role', '1')->get();
+        return view('Landing.daftar_dokter', compact('dokters'));
     }
 
     // jadwal dokter page
