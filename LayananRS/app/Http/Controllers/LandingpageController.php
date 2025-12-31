@@ -24,7 +24,8 @@ class LandingpageController extends Controller
     // jadwal dokter page
     public function jadwalDokter()
     {
-        return view('Landing.jadwal_dokter');
+        $dokters = User::where('role', '1')->get();
+        return view('Landing.jadwal_dokter', compact('dokters'));
     }
 
     // riwayat page

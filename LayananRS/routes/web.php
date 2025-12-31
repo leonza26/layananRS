@@ -22,7 +22,7 @@ Route::controller(LandingpageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
     Route::get('/daftar_dokter', 'daftarDokter')->name('daftar.dokter');
     Route::get('/riwayat', 'riwayat')->name('riwayat');
-    Route::get('/jadwal_dokter', 'jadwalDokter')->name('jadwal.dokter');
+    Route::get('/jadwal_dokter/{id}', 'jadwalDokter')->name('jadwal.dokter');
     Route::get('/booking_dokter', 'bookingDokter')->name('booking.dokter');
     Route::get('/faq', 'faq')->name('faq');
     Route::get('/kontak_kami', 'kontakKami')->name('kontak.kami');
@@ -120,4 +120,3 @@ Route::get('/loading', function () {
 })->name('loading');
 
 Route::get('/redirect', [\App\Http\Controllers\RedirectController::class, 'index'])->name('redirect.dashboard');
-

@@ -11,12 +11,12 @@
             <!-- Foto Dokter -->
             <div class="md:w-1/3 text-center">
                 <img class="w-48 h-48 rounded-full mx-auto object-cover shadow-md"
-                    src="https://placehold.co/400x400/3B82F6/FFFFFF?text=Dr.+Andi" alt="Foto Dr. Andi Budiman">
+                    src="{{ $dokters->dokter->photo_url ? asset('storage/' . $dokters->dokter->photo_url) : 'https://placehold.co/400x400/3B82F6/FFFFFF?text=' . urlencode($dokters->name) }}" alt="{{ $dokters->name }}">
             </div>
             <!-- Detail Info Dokter -->
             <div class="md:w-2/3">
-                <h1 class="text-3xl font-bold text-gray-800">Dr. Andi Budiman, Sp.A</h1>
-                <p class="text-blue-600 font-semibold text-lg mt-1">Dokter Spesialis Anak</p>
+                <h1 class="text-3xl font-bold text-gray-800">{{ $dokters->name }}</h1>
+                <p class="text-blue-600 font-semibold text-lg mt-1">{{ $dokters->dokter->specialization }}</p>
                 <div class="flex items-center mt-3 text-gray-600">
                     <svg class="w-5 h-5 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path
