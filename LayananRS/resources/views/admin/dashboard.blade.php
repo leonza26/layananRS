@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('admin_page_title')
-    Admin Dashboard - Klinik Sehat
+    Admin Dashboard - RS Prima Sehat
 @endsection
 
 @section('admin_content')

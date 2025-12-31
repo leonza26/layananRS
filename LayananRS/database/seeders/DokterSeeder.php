@@ -45,3 +45,7 @@ class DokterSeeder extends Seeder
         });
     }
 }
+
+
+// user : jamelah@gmail.com
+// pass : jamelah123#

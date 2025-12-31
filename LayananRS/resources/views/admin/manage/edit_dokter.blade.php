@@ -1,6 +1,6 @@
 @extends('admin.layouts.layout')
 
-@section('title', 'Edit Dokter - Klinik Sehat')
+@section('title', 'Edit Dokter - RS Prima Sehat ')
 
 
 @section('admin_content')

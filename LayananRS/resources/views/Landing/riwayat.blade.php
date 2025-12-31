@@ -1,7 +1,7 @@
 @extends('Landing.layouts.layout')
 
 @section('landing_page_title')
-    Klinik Sehat | Riwayat Dokter
+    RS Prima Sehat  | Riwayat Dokter
 @endsection
 
 @section('content')

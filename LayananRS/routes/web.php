@@ -13,12 +13,21 @@ Route::get('/users', function () {
     return view('BelajarLivewire.users');
 });
 
+use App\Http\Controllers\Auth\GoogleController;
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
 Route::controller(LandingpageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
     Route::get('/daftar_dokter', 'daftarDokter')->name('daftar.dokter');
     Route::get('/riwayat', 'riwayat')->name('riwayat');
     Route::get('/jadwal_dokter', 'jadwalDokter')->name('jadwal.dokter');
     Route::get('/booking_dokter', 'bookingDokter')->name('booking.dokter');
+    Route::get('/faq', 'faq')->name('faq');
+    Route::get('/kontak_kami', 'kontakKami')->name('kontak.kami');
+    Route::get('/kebijakan_privasi', 'kebijakanPrivasi')->name('kebijakan.privasi');
+
 
 });
 
@@ -105,3 +114,10 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
 // });
 
 require __DIR__.'/auth.php';
+
+Route::get('/loading', function () {
+    return view('auth.loading');
+})->name('loading');
+
+Route::get('/redirect', [\App\Http\Controllers\RedirectController::class, 'index'])->name('redirect.dashboard');
+

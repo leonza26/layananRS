@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
-class AuthenticatedSessionController extends Controller
+class LoginController extends Controller
 {
+
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create()
     {
         return view('auth.auth_portal');
     }
@@ -22,29 +21,19 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        $authUserRole = Auth::user()->role;
-
-        if($authUserRole == 0){
-            return redirect()->intended(route('admin', absolute: false));
-        }elseif($authUserRole == 1){
-            return redirect()->intended(route('dokter', absolute: false));
-        }else{
-            return redirect()->intended(route('pasien', absolute: false));
-        }
-
-
+        return redirect()->route('loading');
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 

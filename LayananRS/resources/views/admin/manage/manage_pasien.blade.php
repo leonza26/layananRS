@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('admin_page_title')
-    Manajemen Pasien - Klinik Sehat
+    Manajemen Pasien - RS Prima Sehat
 @endsection
 
 @section('admin_content')

@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('admin_page_title')
-    Laporan & Analitik - Klinik Sehat
+    Laporan & Analitik - RS Prima Sehat
 @endsection
 
 @section('admin_content')

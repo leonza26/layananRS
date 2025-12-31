@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('admin_page_title')
-    Setting - Klinik Sehat
+    Setting - RS Prima Sehat
 @endsection
 
 @section('admin_content')
@@ -77,7 +77,7 @@
                  <form action="#" method="POST" class="space-y-4">
                     <div>
                         <label for="site_name" class="block text-sm font-medium text-gray-700">Nama Situs</label>
-                        <input type="text" name="site_name" id="site_name" value="Klinik Sehat" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                        <input type="text" name="site_name" id="site_name" value="RS Prima Sehat " class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                     </div>
                      <div class="pt-2">
                          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">

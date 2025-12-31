@@ -1,7 +1,7 @@
 @extends('admin.layouts.layout')
 
 @section('admin_page_title')
-    Manage Janji Temu- Klinik Sehat
+    Manage Janji Temu- RS Prima Sehat
 @endsection
 
 @section('admin_content')

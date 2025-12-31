@@ -5,7 +5,7 @@
     <div class="mx-auto w-full max-w-sm lg:w-96">
 
         <div>
-            <a href="/" class="text-3xl font-bold text-blue-600">Klinik Sehat</a>
+            <a href="/" class="text-3xl font-bold text-blue-600">RS Prima Sehat </a>
             <h2 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Selamat Datang Kembali</h2>
             <p class="mt-2 text-sm text-gray-600">
                 Belum punya akun?

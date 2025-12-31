@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Akun Saya') - Klinik Sehat</title>
+    <title>@yield('title', 'Akun Saya') - RS Prima Sehat </title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <a href="/" class="text-2xl font-bold text-blue-600">Klinik Sehat</a>
+                <a href="/" class="text-2xl font-bold text-blue-600">RS Prima Sehat </a>
                 <!-- Navigasi bisa ditambahkan di sini jika perlu -->
             </div>
         </div>

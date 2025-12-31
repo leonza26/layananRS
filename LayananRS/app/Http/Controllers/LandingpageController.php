@@ -38,4 +38,20 @@ class LandingpageController extends Controller
     {
         return view('Landing.booking_dokter');
     }
+
+    public function faq()
+    {
+        return view('Landing.faq');
+    }
+
+    public function kontakKami()
+    {
+        return view('Landing.kontak');
+    }
+
+    public function kebijakanPrivasi()
+    {
+        return view('Landing.keb_privasi');
+    }
+
 }

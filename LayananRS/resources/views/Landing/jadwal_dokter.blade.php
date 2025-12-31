@@ -1,7 +1,7 @@
 @extends('Landing.layouts.layout')
 
 @section('landing_page_title')
-    Klinik Sehat | Jadwal Dokter
+    RS Prima Sehat  | Jadwal Dokter
 @endsection
 
 @section('content')
