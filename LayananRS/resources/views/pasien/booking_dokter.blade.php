@@ -7,7 +7,7 @@
     <!-- Header Halaman -->
     <div class="border-b pb-4 mb-6">
         <div class="flex items-center space-x-2 text-sm mb-2">
-             <a href="#" class="text-blue-600 hover:text-blue-800">Detail Dokter</a>
+             <a href="{{ route('jadwal.dokter', ['id' => $dokter->id]) }}" class="text-blue-600 hover:text-blue-800">Detail Dokter</a>
              <svg class="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
             <span class="text-gray-500">Konfirmasi Janji Temu</span>
         </div>
@@ -18,23 +18,29 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Kolom Form -->
         <div class="lg:col-span-2">
-            <form action="#" method="POST" class="space-y-8">
+            <form action="{{ route('pasien.booking.store') }}" method="POST" class="space-y-8">
                 @csrf
+                {{-- Data tersembunyi untuk dikirim --}}
+                <input type="hidden" name="dokter_id" value="{{ $dokter->id }}">
+                <input type="hidden" name="pasien_id" value="{{ $pasien->id }}">
+                <input type="hidden" name="appointment_date" value="{{ $request->date }}">
+                <input type="hidden" name="appointment_time" value="{{ $request->time }}">
+
                 <!-- 1. Data Pasien -->
                 <div>
                     <h3 class="text-lg font-semibold text-gray-700 mb-4">1. Data Pasien</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label for="full_name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                            <input type="text" name="full_name" id="full_name" value="Nama Pasien (dari data login)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>
+                            <input type="text" name="full_name" id="full_name" value="{{ Auth::user()->name }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>
                         </div>
                         <div>
                             <label for="phone_number" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                            <input type="tel" name="phone_number" id="phone_number" value="08123456789 (dari data login)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>
+                            <input type="tel" name="phone_number" id="phone_number" value="{{ $pasien->no_telepon ?? 'Belum diisi' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>
                         </div>
                         <div class="sm:col-span-2">
                              <label for="complaint" class="block text-sm font-medium text-gray-700">Keluhan Singkat (Opsional)</label>
-                             <textarea id="complaint" name="complaint" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                             <textarea id="complaint" name="complaint" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Contoh: Demam dan sakit kepala selama 2 hari."></textarea>
                         </div>
                     </div>
                 </div>
@@ -43,23 +49,24 @@
                 <div>
                     <h3 class="text-lg font-semibold text-gray-700 mb-4">2. Pilih Metode Pembayaran</h3>
                     <div class="space-y-4">
-                        <!-- Pilihan 1: Virtual Account -->
                         <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-blue-500">
-                            <input name="payment_method" type="radio" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <input name="payment_method" type="radio" value="virtual_account" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" required>
                             <span class="ml-3 font-medium text-gray-800">Virtual Account</span>
                         </label>
-                        <!-- Pilihan 2: QRIS -->
                          <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-blue-500">
-                            <input name="payment_method" type="radio" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <input name="payment_method" type="radio" value="qris" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" required>
                             <span class="ml-3 font-medium text-gray-800">QRIS</span>
                         </label>
                     </div>
+                     @error('payment_method')
+                        <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
 
                  <!-- Tombol Aksi -->
                 <div class="pt-5">
                     <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Konfirmasi dan Bayar
+                        Konfirmasi dan Lanjutkan Pembayaran
                     </button>
                 </div>
             </form>
@@ -71,36 +78,41 @@
                 <h3 class="text-lg font-semibold text-gray-800 border-b pb-4">Ringkasan Janji Temu</h3>
                 <div class="mt-4 space-y-4">
                     <div class="flex items-center space-x-4">
-                        <img class="h-16 w-16 rounded-lg object-cover" src="https://placehold.co/100x100/E2E8F0/4A5568?text=D" alt="Dokter">
+                        <img class="h-16 w-16 rounded-lg object-cover" src="{{ $dokter->dokter->photo_url ? asset('storage/' . $dokter->dokter->photo_url) : 'https://placehold.co/400x400/3B82F6/FFFFFF?text=' . urlencode($dokter->name) }}" alt="{{ $dokter->name }}">
                         <div>
-                            <p class="font-bold text-gray-900">Dr. Budi Santoso</p>
-                            <p class="text-sm text-gray-600">Dokter Umum</p>
+                            <p class="font-bold text-gray-900">{{ $dokter->name }}</p>
+                            <p class="text-sm text-gray-600">{{ $dokter->dokter->specialization }}</p>
                         </div>
                     </div>
                     <div class="border-t pt-4 space-y-2">
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Tanggal</span>
-                            <span class="font-medium text-gray-800">Rabu, 30 Okt 2025</span>
+                            <span class="font-medium text-gray-800">{{ $date }}</span>
                         </div>
                          <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Waktu</span>
-                            <span class="font-medium text-gray-800">10:00 WIB</span>
+                            <span class="font-medium text-gray-800">{{ $time }} WIB</span>
                         </div>
                     </div>
+                    @php
+                        $biayaKonsultasi = $dokter->dokter->harga_konsultasi ?? 150000;
+                        $biayaAdmin = 5000;
+                        $total = $biayaKonsultasi + $biayaAdmin;
+                    @endphp
                     <div class="border-t pt-4 space-y-2">
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Biaya Konsultasi</span>
-                            <span class="font-medium text-gray-800">Rp 150.000</span>
+                            <span class="font-medium text-gray-800">Rp {{ number_format($biayaKonsultasi, 0, ',', '.') }}</span>
                         </div>
                          <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Biaya Admin</span>
-                            <span class="font-medium text-gray-800">Rp 5.000</span>
+                            <span class="font-medium text-gray-800">Rp {{ number_format($biayaAdmin, 0, ',', '.') }}</span>
                         </div>
                     </div>
                      <div class="border-t pt-4">
                         <div class="flex justify-between font-bold text-base">
                             <span class="text-gray-900">Total Pembayaran</span>
-                            <span class="text-blue-600">Rp 155.000</span>
+                            <span class="text-blue-600">Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -109,3 +121,4 @@
     </div>
 </div>
 @endsection
+

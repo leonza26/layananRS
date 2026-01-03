@@ -26,10 +26,7 @@
                     <span>4.9 (150 ulasan)</span>
                 </div>
                 <p class="text-gray-600 mt-4 leading-relaxed">
-                    Dr. Andi Budiman adalah seorang dokter spesialis anak dengan pengalaman lebih dari 10 tahun. Beliau
-                    lulus dari Fakultas Kedokteran Universitas Indonesia dan telah mendedikasikan karirnya untuk memberikan
-                    perawatan terbaik bagi anak-anak. Beliau aktif mengikuti seminar dan workshop untuk terus memperbarui
-                    ilmunya.
+                    {{ $dokters->dokter->bio ?? 'Dokter ' . $dokters->name . ' adalah seorang profesional medis yang berdedikasi dengan pengalaman luas dalam bidang ' . $dokters->dokter->specialization . '. Dengan pendekatan yang penuh perhatian dan pengetahuan mendalam, dokter ini berkomitmen untuk memberikan perawatan terbaik bagi setiap pasiennya.' }}
                 </p>
                 <div class="mt-6">
                     <h3 class="font-semibold text-gray-700">Praktik di:</h3>
@@ -45,15 +42,15 @@
 
             <!-- Navigasi Tanggal/Minggu -->
             <div class="flex justify-between items-center mb-6">
-                <button class="p-2 rounded-full hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                <button class="p-2 rounded-full hover:bg-gray-100" title="Minggu Sebelumnya (Fungsi belum aktif)">
+                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
                 </button>
-                <h3 class="text-lg font-semibold text-gray-700">23 - 29 September 2025</h3>
-                <button class="p-2 rounded-full hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                <h3 class="text-lg font-semibold text-gray-700">{{ $weekRange }}</h3>
+                <button class="p-2 rounded-full hover:bg-gray-100" title="Minggu Berikutnya (Fungsi belum aktif)">
+                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
@@ -63,70 +60,25 @@
             <!-- Grid Hari & Slot Waktu -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
-                <!-- Hari: Senin -->
-                <div class="border p-4 rounded-lg">
-                    <h4 class="font-bold text-center">Senin</h4>
-                    <p class="text-sm text-gray-500 text-center mb-4">23 Sep</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">09:00</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">09:30</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-200 rounded-lg cursor-not-allowed"
-                            disabled>10:00</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">10:30</button>
+                @foreach ($weeklySchedule as $day)
+                    <div class="border p-4 rounded-lg @if ($day['status'] !== 'Tersedia') bg-gray-50 @endif">
+                        <h4 class="font-bold text-center">{{ $day['dayName'] }}</h4>
+                        <p class="text-sm text-gray-500 text-center mb-4">{{ $day['date'] }}</p>
+
+                        @if ($day['status'] === 'Tersedia')
+                            <div class="grid grid-cols-2 gap-2">
+                                @foreach ($day['slots'] as $slot)
+                                    <a href="{{ route('pasien.booking', ['dokter_id' => $dokters->id, 'date' => \Carbon\Carbon::parse($day['date'])->format('Y-m-d'), 'time' => $slot]) }}"
+                                        class="px-3 py-2 text-sm text-center font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">
+                                        {{ $slot }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center text-gray-500 text-sm mt-4">{{ $day['status'] }}</div>
+                        @endif
                     </div>
-                </div>
-
-                <!-- Hari: Selasa (Penuh) -->
-                <div class="border p-4 rounded-lg bg-gray-50">
-                    <h4 class="font-bold text-center">Selasa</h4>
-                    <p class="text-sm text-gray-500 text-center mb-4">24 Sep</p>
-                    <div class="text-center text-gray-500 text-sm mt-4">Jadwal Penuh</div>
-                </div>
-
-                <!-- Hari: Rabu -->
-                <div class="border p-4 rounded-lg">
-                    <h4 class="font-bold text-center">Rabu</h4>
-                    <p class="text-sm text-gray-500 text-center mb-4">25 Sep</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">09:00</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">09:30</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">10:00</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">10:30</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-200 rounded-lg cursor-not-allowed"
-                            disabled>11:00</button>
-                    </div>
-                </div>
-
-                <!-- Hari: Kamis (Libur) -->
-                <div class="border p-4 rounded-lg bg-gray-50">
-                    <h4 class="font-bold text-center">Kamis</h4>
-                    <p class="text-sm text-gray-500 text-center mb-4">26 Sep</p>
-                    <div class="text-center text-gray-500 text-sm mt-4">Tidak Berpraktik</div>
-                </div>
-
-                <!-- Hari: Jumat -->
-                <div class="border p-4 rounded-lg">
-                    <h4 class="font-bold text-center">Jumat</h4>
-                    <p class="text-sm text-gray-500 text-center mb-4">27 Sep</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-200 rounded-lg cursor-not-allowed"
-                            disabled>14:00</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">14:30</button>
-                        <button
-                            class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">15:00</button>
-                    </div>
-                </div>
+                @endforeach
 
             </div>
         </section>

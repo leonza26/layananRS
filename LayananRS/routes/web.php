@@ -7,13 +7,13 @@ use App\Http\Controllers\pasien\PasienMainController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Counter;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/counter', Counter::class);
 Route::get('/users', function () {
     return view('BelajarLivewire.users');
 });
 
-use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
@@ -101,6 +101,8 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
             Route::get('/riwayat', 'riwayat')->name('pasien.riwayat');
             // booking
             Route::get('/booking', 'booking')->name('pasien.booking');
+            // store booking
+            Route::post('/booking', 'storeBooking')->name('pasien.booking.store');
 
         });
 

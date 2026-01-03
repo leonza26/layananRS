@@ -5,7 +5,7 @@
 @section('content')
     <!-- Salam Pembuka -->
     <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 class="text-2xl font-semibold text-gray-800">Selamat Datang, [Nama Pasien]!</h2>
+        <h2 class="text-2xl font-semibold text-gray-800">Selamat Datang, {{ $pasien->name }}!</h2>
         <p class="text-gray-500 mt-1">Ini adalah ringkasan aktivitas akun Anda.</p>
     </div>
 
