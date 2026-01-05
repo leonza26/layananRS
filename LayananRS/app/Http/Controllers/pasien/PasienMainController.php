@@ -15,7 +15,9 @@ class PasienMainController extends Controller
     // summary
     public function index()
     {
-        $pasien = User::with('pasien')->where('role', '2');
+        // read data pasien di summary.blade.php
+        $pasien = User::where('role', '2')->findOrFail(Auth::id());
+
         return view('pasien.summary', compact('pasien'));
     }
 
@@ -28,7 +30,23 @@ class PasienMainController extends Controller
     // riwayat
     public function riwayat()
     {
-        return view('pasien.riwayat_janjitemu');
+        $pasienId = Auth::user()->pasien->id;
+        $now = Carbon::now();
+
+        $appointments = Appointment::with('dokter.user')
+            ->where('pasien_id', $pasienId)
+            ->orderBy('appointment_time', 'desc')
+            ->get();
+
+        $upcomingAppointments = $appointments->filter(function ($appointment) use ($now) {
+            return Carbon::parse($appointment->appointment_time)->isFuture();
+        });
+
+        $completedAppointments = $appointments->filter(function ($appointment) use ($now) {
+            return Carbon::parse($appointment->appointment_time)->isPast();
+        });
+
+        return view('pasien.riwayat_janjitemu', compact('upcomingAppointments', 'completedAppointments'));
     }
 
     // booking page
@@ -63,6 +81,9 @@ class PasienMainController extends Controller
             'complaint' => 'nullable|string',
         ]);
 
+        $dokterUser = User::with('dokter')->findOrFail($request->dokter_id);
+        $consultation_fee = $dokterUser->dokter->consultaion_fee;
+
         $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
 
         // Race condition check: Pastikan slot belum diambil orang lain
@@ -87,11 +108,28 @@ class PasienMainController extends Controller
         // Buat Pembayaran
         Payment::create([
             'appointment_id' => $appointment->id,
-            'amount' => $appointment->dokter->harga_konsultasi + 5000, // Asumsi biaya admin 5000
+            'amount' => $consultation_fee + 5000, // Biaya konsultasi + biaya layanan
             'payment_method' => $request->payment_method,
             'status' => 'pending',
         ]);
 
         return redirect()->route('pasien.riwayat')->with('success', 'Janji temu berhasil dibuat dan menunggu pembayaran.');
+    }
+
+    // cancel booking
+    public function cancelBooking(Appointment $appointment)
+    {
+        // Otorisasi: Pastikan janji temu ini milik pasien yang sedang login
+        if ($appointment->pasien_id !== Auth::user()->pasien->id) {
+            return redirect()->route('pasien.riwayat')->with('error', 'Anda tidak berwenang membatalkan janji temu ini.');
+        }
+
+        // Hapus pembayaran terkait terlebih dahulu
+        Payment::where('appointment_id', $appointment->id)->delete();
+
+        // Hapus janji temu
+        $appointment->delete();
+
+        return redirect()->route('pasien.riwayat')->with('success', 'Janji temu telah berhasil dibatalkan.');
     }
 }

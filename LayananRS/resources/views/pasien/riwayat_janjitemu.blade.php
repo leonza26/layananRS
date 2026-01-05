@@ -29,38 +29,52 @@
         <div class="mt-6 space-y-4">
             <!-- Tab: Akan Datang -->
             <div x-show="tab === 'upcoming'" x-cloak>
-                <!-- Contoh Janji Temu 1 -->
-                <div class="border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center">
-                    <div class="flex items-center mb-4 sm:mb-0">
-                        <img class="h-12 w-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/4A5568?text=D" alt="Dokter">
-                        <div class="ml-4">
-                            <p class="font-semibold text-gray-800">Dr. Budi Santoso (Dokter Umum)</p>
-                            <p class="text-sm text-gray-500">Rabu, 30 Oktober 2025 - 10:00 WIB</p>
+                @forelse ($upcomingAppointments as $appointment)
+                    <div class="border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center">
+                        <div class="flex items-center mb-4 sm:mb-0">
+                            <img class="h-12 w-12 rounded-full object-cover" src="{{ $appointment->dokter->photo_url ? asset('storage/' . $appointment->dokter->photo_url) : 'https://placehold.co/100x100/E2E8F0/4A5568?text=D' }}" alt="Foto {{ $appointment->dokter->user->name }}">
+                            <div class="ml-4">
+                                <p class="font-semibold text-gray-800">{{ $appointment->dokter->user->name }} ({{ $appointment->dokter->specialization }})</p>
+                                <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($appointment->appointment_time)->translatedFormat('l, d F Y - H:i') }} WIB</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <form action="{{ route('pasien.booking.cancel', $appointment->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin membatalkan janji temu ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Batalkan</button>
+                            </form>
+                            <a href="#" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Lihat Detail</a>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
-                        <a href="#" class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Batalkan</a>
-                        <a href="#" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Lihat Detail</a>
+                @empty
+                    <div class="text-center py-8">
+                        <p class="text-gray-500">Tidak ada janji temu yang akan datang.</p>
                     </div>
-                </div>
+                @endforelse
             </div>
 
             <!-- Tab: Selesai -->
             <div x-show="tab === 'completed'" x-cloak>
-                 <!-- Contoh Janji Temu 2 -->
-                <div class="border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center opacity-75">
-                    <div class="flex items-center mb-4 sm:mb-0">
-                        <img class="h-12 w-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/4A5568?text=A" alt="Dokter">
-                        <div class="ml-4">
-                            <p class="font-semibold text-gray-800">Dr. Anisa Putri (Dokter Gigi)</p>
-                            <p class="text-sm text-gray-500">Jumat, 10 Oktober 2025 - 14:00 WIB</p>
+                @forelse ($completedAppointments as $appointment)
+                    <div class="border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center opacity-75">
+                        <div class="flex items-center mb-4 sm:mb-0">
+                            <img class="h-12 w-12 rounded-full object-cover" src="{{ $appointment->dokter->photo_url ? asset('storage/' . $appointment->dokter->photo_url) : 'https://placehold.co/100x100/E2E8F0/4A5568?text=D' }}" alt="Foto {{ $appointment->dokter->user->name }}">
+                            <div class="ml-4">
+                                <p class="font-semibold text-gray-800">{{ $appointment->dokter->user->name }} ({{ $appointment->dokter->specialization }})</p>
+                                <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($appointment->appointment_time)->translatedFormat('l, d F Y - H:i') }} WIB</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="{{ route('daftar.dokter') }}" class="px-3 py-1.5 text-xs font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600">Booking Lagi</a>
+                            <a href="#" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Beri Ulasan</a>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
-                        <a href="#" class="px-3 py-1.5 text-xs font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600">Booking Lagi</a>
-                        <a href="#" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">Beri Ulasan</a>
+                @empty
+                    <div class="text-center py-8">
+                        <p class="text-gray-500">Belum ada janji temu yang selesai.</p>
                     </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </div>

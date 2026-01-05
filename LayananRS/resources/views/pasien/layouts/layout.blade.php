@@ -33,8 +33,8 @@
                     <div class="flex items-center space-x-4 mb-4 pb-4 border-b">
                         <img class="h-12 w-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/4A5568?text=P" alt="Avatar Pasien">
                         <div>
-                            <p class="font-semibold text-gray-800">Nama Pasien</p>
-                            <p class="text-sm text-gray-500">pasien@email.com</p>
+                            <p class="font-semibold text-gray-800">{{ Auth::user() ? Auth::user()->name : ''}}</p>
+                            <p class="text-sm text-gray-500">{{ Auth::user() ? Auth::user()->email : ''}}</p>
                         </div>
                     </div>
                     <nav class="space-y-1">

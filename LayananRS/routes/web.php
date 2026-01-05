@@ -103,6 +103,8 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
             Route::get('/booking', 'booking')->name('pasien.booking');
             // store booking
             Route::post('/booking', 'storeBooking')->name('pasien.booking.store');
+            // cancel booking
+            Route::delete('/booking/{appointment}/cancel', 'cancelBooking')->name('pasien.booking.cancel');
 
         });
 
