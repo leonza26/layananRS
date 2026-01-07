@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\admin\AdminMainController;
-use App\Http\Controllers\dokter\DokterMainController;
-use App\Http\Controllers\LandingpageController;
-use App\Http\Controllers\pasien\PasienMainController;
-use App\Http\Controllers\ProfileController;
 use App\Livewire\Counter;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\LandingpageController;
+use App\Http\Controllers\admin\AdminMainController;
+use App\Http\Controllers\dokter\DokterMainController;
+use App\Http\Controllers\pasien\PasienMainController;
 
 Route::get('/counter', Counter::class);
 Route::get('/users', function () {
@@ -57,8 +58,42 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
             Route::delete('/delete_pasien/{id}', 'deletePasien')->name('admin.delete.pasien');
 
             Route::get('/manage_janjitemu', 'manageJanjitemu')->name('admin.manage.janjitemu');
+
+            // faq
+            Route::get('/faq', 'faq')->name('admin.manage.faq');
+            // create faq
+            Route::get('/create_faq', 'createFaq')->name('admin.create.faq');
+            // store faq
+            Route::post('/store_faq', 'storeFaq')->name('admin.store.faq');
+            // edit faq
+            Route::get('/edit_faq/{id}', 'editFaq')->name('admin.edit.faq');
+            // update faq
+            Route::put('/update_faq/{id}', 'updateFaq')->name('admin.update.faq');
+            // delete faq
+            Route::delete('/delete_faq/{id}', 'deleteFaq')->name('admin.delete.faq');
+
+
             Route::get('/laporan_analitik', 'laporanAnalitik')->name('admin.laporan.analitik');
             Route::get('/setting', 'setting')->name('admin.setting');
+
+        });
+
+        // faq hospital routes
+         Route::controller(FaqController::class)->group(function () {
+
+            // faq hospital
+            Route::get('/faq', 'index')->name('admin.manage.faq');
+            // create faq
+            Route::get('/create_faq', 'createFaq')->name('admin.create.faq');
+            // store faq
+            Route::post('/store_faq', 'storeFaq')->name('admin.store.faq');
+            // edit faq
+            Route::get('/edit_faq/{id}', 'editFaq')->name('admin.edit.faq');
+            // update faq
+            Route::put('/update_faq/{id}', 'updateFaq')->name('admin.update.faq');
+            // delete faq
+            Route::delete('/delete_faq/{id}', 'deleteFaq')->name('admin.delete.faq');
+
 
         });
 

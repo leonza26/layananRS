@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Faq;
 
+use App\Models\User;
+use Carbon\CarbonPeriod;
 use App\Models\Appointment;
 use App\Models\DoctorSchedule;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
+use App\Http\Controllers\Controller;
 
 class LandingpageController extends Controller
 {
@@ -118,7 +119,8 @@ class LandingpageController extends Controller
 
     public function faq()
     {
-        return view('Landing.faq');
+        $faqs = Faq::latest()->paginate(10);
+        return view('Landing.faq', compact('faqs'));
     }
 
     public function kontakKami()

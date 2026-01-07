@@ -202,6 +202,12 @@ class AdminMainController extends Controller
         return view('admin.manage.manage_janjitemu', compact('appointments')); // Variabel sudah didefinisikan
     }
 
+    // manage pertanyaan user 
+    public function questionUser()
+    {
+        return view('admin.quest_user');
+    }
+
     // laporan & analitik
     public function laporanAnalitik()
     {

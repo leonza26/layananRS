@@ -135,6 +135,42 @@
                     <span class="mx-4" :class="{ 'lg:hidden': sidebarMinimized }">Manajemen Janji Temu</span>
                 </a>
 
+                {{-- manage faq --}}
+
+                <a href="{{ route('admin.manage.faq') }}" class="flex items-center py-2 mt-4 rounded-md"
+                    :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('admin.manage.faq') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('admin.manage.faq') ? 'true' : 'false' }}
+                    }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    <span class="mx-4" :class="{ 'lg:hidden': sidebarMinimized }">Faq</span>
+                </a>
+
+
+                {{-- manage question_user from kontak kami --}}
+
+                <a href="{{ route('admin.manage.faq_user') }}" class="flex items-center py-2 mt-4 rounded-md"
+                    :class="{
+                        'px-4': !sidebarMinimized,
+                        'justify-center px-2': sidebarMinimized,
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('admin.manage.faq_user') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('admin.manage.faq_user') ? 'true' : 'false' }}
+                    }">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    <span class="mx-4" :class="{ 'lg:hidden': sidebarMinimized }">Pertanyaan User</span>
+                </a>
 
                 {{-- reports --}}
 
