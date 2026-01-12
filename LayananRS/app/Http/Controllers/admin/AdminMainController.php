@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Models\KontakKami;
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
 use App\Models\User;
@@ -205,7 +206,8 @@ class AdminMainController extends Controller
     // manage pertanyaan user 
     public function questionUser()
     {
-        return view('admin.quest_user');
+        $messages = KontakKami::latest()->paginate(10);
+        return view('admin.quest_user', compact('messages'));
     }
 
     // laporan & analitik

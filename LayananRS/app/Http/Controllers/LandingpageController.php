@@ -7,7 +7,9 @@ use App\Models\Faq;
 
 use App\Models\User;
 use Carbon\CarbonPeriod;
+use App\Models\KontakKami;
 use App\Models\Appointment;
+use Illuminate\Http\Request;
 use App\Models\DoctorSchedule;
 use App\Http\Controllers\Controller;
 
@@ -126,6 +128,21 @@ class LandingpageController extends Controller
     public function kontakKami()
     {
         return view('Landing.kontak');
+    }
+
+    // Menyimpan pesan ke database
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        KontakKami::create($request->all());
+
+        return redirect()->route('contact')->with('success', 'Pesan Anda telah terkirim! Tim kami akan segera menghubungi Anda.');
     }
 
     public function kebijakanPrivasi()

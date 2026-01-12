@@ -28,9 +28,14 @@ Route::controller(LandingpageController::class)->group(function () {
     Route::get('/faq', 'faq')->name('faq');
     Route::get('/kontak_kami', 'kontakKami')->name('kontak.kami');
     Route::get('/kebijakan_privasi', 'kebijakanPrivasi')->name('kebijakan.privasi');
+    
 
 
 });
+
+
+Route::get('/contact', [FaqController::class, 'kontakKami'])->name('contact');
+Route::post('/contact', [FaqController::class, 'store'])->name('contact.store');
 
 // admin routes
 Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () {
@@ -59,19 +64,6 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
 
             Route::get('/manage_janjitemu', 'manageJanjitemu')->name('admin.manage.janjitemu');
 
-            // faq
-            Route::get('/faq', 'faq')->name('admin.manage.faq');
-            // create faq
-            Route::get('/create_faq', 'createFaq')->name('admin.create.faq');
-            // store faq
-            Route::post('/store_faq', 'storeFaq')->name('admin.store.faq');
-            // edit faq
-            Route::get('/edit_faq/{id}', 'editFaq')->name('admin.edit.faq');
-            // update faq
-            Route::put('/update_faq/{id}', 'updateFaq')->name('admin.update.faq');
-            // delete faq
-            Route::delete('/delete_faq/{id}', 'deleteFaq')->name('admin.delete.faq');
-
 
             Route::get('/laporan_analitik', 'laporanAnalitik')->name('admin.laporan.analitik');
             Route::get('/setting', 'setting')->name('admin.setting');
@@ -93,6 +85,12 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
             Route::put('/update_faq/{id}', 'updateFaq')->name('admin.update.faq');
             // delete faq
             Route::delete('/delete_faq/{id}', 'deleteFaq')->name('admin.delete.faq');
+
+            // show questions from users
+            Route::get('/contact_messages', 'showQuestions')->name('admin.contact_messages.index');
+            // delete message
+            Route::delete('/contact_messages/{id}', 'destroy')->name('admin.contact_messages.destroy');
+
 
 
         });

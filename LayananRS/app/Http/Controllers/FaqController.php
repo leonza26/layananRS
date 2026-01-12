@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faq;
+use App\Models\KontakKami;
 use Illuminate\Http\Request;
 
 class FaqController extends Controller
@@ -67,5 +68,34 @@ class FaqController extends Controller
         $faq->delete();
 
         return redirect()->route('admin.delete.faq')->with('success', 'FAQ berhasil dihapus.');
+    }
+
+
+
+    
+
+    // menampilkan pertanyaan user 
+    public function showQuestions()
+    {
+        // Urutkan dari yang terbaru
+        $messages = KontakKami::latest()->paginate(10);
+        return view('admin.quest_user', compact('messages'));
+    }
+
+    // Menghapus pesan
+    public function destroy($id)
+    {
+        $message = KontakKami::findOrFail($id);
+        $message->delete();
+
+        return redirect()->route('admin.contact_messages.destroy')->with('success', 'Pesan berhasil dihapus.');
+    }
+    
+    // Opsional: Menandai pesan sudah dibaca (bisa dikembangkan nanti)
+    public function markAsRead($id)
+    {
+        $message = KontakKami::findOrFail($id);
+        $message->update(['is_read' => true]);
+        return back();
     }
 }

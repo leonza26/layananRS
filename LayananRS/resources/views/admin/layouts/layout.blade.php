@@ -156,12 +156,12 @@
 
                 {{-- manage question_user from kontak kami --}}
 
-                <a href="{{ route('admin.manage.faq_user') }}" class="flex items-center py-2 mt-4 rounded-md"
+                <a href="{{ route('admin.contact_messages.index') }}" class="flex items-center py-2 mt-4 rounded-md"
                     :class="{
                         'px-4': !sidebarMinimized,
                         'justify-center px-2': sidebarMinimized,
-                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('admin.manage.faq_user') ? 'true' : 'false' }},
-                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('admin.manage.faq_user') ? 'true' : 'false' }}
+                        'text-gray-700 bg-gray-200 font-semibold': {{ request()->routeIs('admin.contact_messages.index') ? 'true' : 'false' }},
+                        'text-gray-600 hover:bg-gray-200': {{ !request()->routeIs('admin.contact_messages.index') ? 'true' : 'false' }}
                     }">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">

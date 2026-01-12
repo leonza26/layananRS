@@ -70,7 +70,7 @@
                             </div>
                         </div>
                     </div>
-                      <h3 class="font-semibold text-gray-800 my-auto mt-8">Maps</h3>
+                    <h3 class="font-semibold text-gray-800 my-auto mt-8">Maps</h3>
                     <!-- Peta / Visual (Placeholder) -->
                     <div class="mt-4 h-48 bg-gray-200 rounded-lg overflow-hidden relative">
                         {{-- <div class="absolute inset-0 flex items-center justify-center text-gray-500 bg-gray-100">
@@ -91,11 +91,18 @@
                     </div>
                 </div>
 
+                @if (session('success'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <!-- Form Kontak -->
                 <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6">Kirim Pesan</h2>
-                    <form action="#" method="POST" class="space-y-5">
-                        <!-- @csrf jika di Laravel -->
+
+                    <form action="{{ route('contact.store') }}" method="POST" class="space-y-5">
+                        @csrf 
 
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
@@ -137,7 +144,7 @@
                                     d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                             </svg>
                         </button>
-                    </form>
+                    </form> 
                 </div>
 
             </div>
