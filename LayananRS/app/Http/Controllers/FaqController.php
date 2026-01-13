@@ -71,7 +71,6 @@ class FaqController extends Controller
     }
 
 
-
     
 
     // menampilkan pertanyaan user 
@@ -88,7 +87,7 @@ class FaqController extends Controller
         $message = KontakKami::findOrFail($id);
         $message->delete();
 
-        return redirect()->route('admin.contact_messages.destroy')->with('success', 'Pesan berhasil dihapus.');
+        return redirect()->route('admin.contact_messages.index')->with('success', 'Pesan berhasil dihapus.');
     }
     
     // Opsional: Menandai pesan sudah dibaca (bisa dikembangkan nanti)

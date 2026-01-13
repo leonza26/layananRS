@@ -34,8 +34,8 @@ Route::controller(LandingpageController::class)->group(function () {
 });
 
 
-Route::get('/contact', [FaqController::class, 'kontakKami'])->name('contact');
-Route::post('/contact', [FaqController::class, 'store'])->name('contact.store');
+Route::get('/contact', [LandingpageController::class, 'kontakKami'])->name('contact');
+Route::post('/contact', [LandingpageController::class, 'store'])->name('contact.store');
 
 // admin routes
 Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () {
