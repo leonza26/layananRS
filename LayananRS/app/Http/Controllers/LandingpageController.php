@@ -41,7 +41,7 @@ class LandingpageController extends Controller
         $endOfWeek = Carbon::now()->endOfWeek();
 
         // Ambil semua jadwal dokter untuk rentang tanggal minggu ini
-        $schedules = DoctorSchedule::where('doctor_id', $dokter->id)
+        $schedules = DoctorSchedule::where('dokter_id', $dokter->id)
             ->whereBetween('date', [$startOfWeek->format('Y-m-d'), $endOfWeek->format('Y-m-d')])
             ->get()
             ->keyBy('date'); // Gunakan tanggal sebagai kunci

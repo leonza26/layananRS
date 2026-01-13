@@ -49,17 +49,6 @@
                         </select>
                     </div>
 
-                    <!-- Filter Rumah Sakit -->
-                    <div class="mb-6">
-                        <label for="hospital" class="block text-sm font-medium text-gray-700 mb-2">Rumah Sakit</label>
-                        <select id="hospital"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <option>Semua Rumah Sakit</option>
-                            <option>RS Sehat Sentosa</option>
-                            <option>RS Harapan Bunda</option>
-                            <option>Klinik Medika Utama</option>
-                        </select>
-                    </div>
 
                     <!-- Filter Hari Praktik -->
                     <div class="mb-6">
@@ -180,7 +169,7 @@
                         </div>
                     </div>
                     @endforeach
-                   
+
 
                 </div>
 

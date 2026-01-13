@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('payment_method');
             $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
             $table->string('transaction_id')->nullable();
+            // token midtrans untuk pembayaran
+            $table->string('snap_token')->nullable();
             $table->timestamps();
         });
     }

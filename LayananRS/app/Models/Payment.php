@@ -17,6 +17,7 @@ class Payment extends Model
         'payment_method',
         'status',
         'transaction_id',
+        'snap_token',
     ];
     // Relasi balik ke Appointment
     public function appointment()
