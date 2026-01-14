@@ -1,164 +1,127 @@
 @extends('Landing.layouts.layout')
 
 @section('landing_page_title')
-    RS Prima Sehat  | Booking Dokter
+    RS Prima Sehat | Booking Dokter
 @endsection
 
 @section('content')
-    <div class="text-center mb-10 pt-12">
-        <h1 class="text-3xl font-bold text-gray-800">Konfirmasi Janji Temu Anda</h1>
-        <p class="text-gray-600 mt-2">Satu langkah lagi untuk menyelesaikan pemesanan Anda.</p>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 py-6 px-6">
-
-        <!-- ===== Kolom Kiri: Form Data Pasien & Pembayaran ===== -->
-        <div class="lg:col-span-2">
-            <div class="bg-white p-8 rounded-xl shadow-lg">
-                <!-- Bagian Data Diri Pasien -->
-                <section>
-                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                        <span
-                            class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</span>
-                        Data Diri Pasien
-                    </h2>
-                    <!-- Jika user sudah login, bisa tambahkan pesan: "Memesan sebagai [Nama User]" -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                            <input type="text" id="full_name"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="Masukkan nama lengkap">
-                        </div>
-                        <div>
-                            <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-1">Nomor
-                                Telepon</label>
-                            <input type="tel" id="phone_number"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="Contoh: 08123456789">
-                        </div>
-                        <div>
-                            <label for="birth_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal
-                                Lahir</label>
-                            <input type="date" id="birth_date"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
-                            <select id="gender"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                <option>Pilih Jenis Kelamin</option>
-                                <option>Laki-laki</option>
-                                <option>Perempuan</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="complaint" class="block text-sm font-medium text-gray-700 mb-1">Keluhan Singkat
-                                (Opsional)</label>
-                            <textarea id="complaint" rows="3"
-                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="Jelaskan keluhan utama Anda secara singkat"></textarea>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Bagian Metode Pembayaran -->
-                <section class="mt-10 border-t pt-8">
-                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                        <span
-                            class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
-                        Metode Pembayaran
-                    </h2>
-                    <div class="space-y-4">
-                        <!-- Opsi 1: Virtual Account -->
-                        <div class="border rounded-lg p-4 flex items-center justify-between">
-                            <div>
-                                <h3 class="font-semibold">Virtual Account</h3>
-                                <p class="text-sm text-gray-500">Bayar melalui Bank BCA, Mandiri, BRI, dll.</p>
-                            </div>
-                            <input type="radio" name="payment_method" class="h-5 w-5 text-blue-600 focus:ring-blue-500">
-                        </div>
-                        <!-- Opsi 2: QRIS -->
-                        <div class="border rounded-lg p-4 flex items-center justify-between">
-                            <div>
-                                <h3 class="font-semibold">QRIS</h3>
-                                <p class="text-sm text-gray-500">Bayar dengan GoPay, OVO, Dana, dll.</p>
-                            </div>
-                            <input type="radio" name="payment_method" class="h-5 w-5 text-blue-600 focus:ring-blue-500">
-                        </div>
-                        <!-- Opsi 3: Kartu Kredit -->
-                        <div class="border rounded-lg p-4 flex items-center justify-between">
-                            <div>
-                                <h3 class="font-semibold">Kartu Kredit / Debit</h3>
-                                <p class="text-sm text-gray-500">Visa, Mastercard, JCB</p>
-                            </div>
-                            <input type="radio" name="payment_method" class="h-5 w-5 text-blue-600 focus:ring-blue-500">
-                        </div>
-                    </div>
-                </section>
-            </div>
+    <div class="bg-white rounded-lg shadow p-6">
+        <!-- Header -->
+        <div class="border-b pb-4 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800">Formulir Booking</h2>
+            <p class="text-gray-500 mt-1">Konfirmasi data dan pembayaran.</p>
         </div>
 
-        <!-- ===== Kolom Kanan: Ringkasan Pemesanan ===== -->
-        <div class="lg:col-span-1">
-            <div class="bg-white p-6 rounded-xl shadow-lg sticky top-28">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 pb-4 border-b">Ringkasan Pemesanan</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Kolom Form -->
+            <div class="lg:col-span-2">
+                <form action="{{ route('pasien.booking.store') }}" method="POST" class="space-y-8">
+                    @csrf
 
-                <!-- Info Dokter -->
-                <div class="flex items-center gap-4">
-                    <img class="w-16 h-16 rounded-full object-cover"
-                        src="https://placehold.co/100x100/3B82F6/FFFFFF?text=Dr.+A" alt="Foto Dokter">
+                    {{-- Data Hidden --}}
+                    <input type="hidden" name="dokter_id" value="{{ $dokter->id }}">
+                    {{-- Tanggal dan Waktu diambil dari requestData yang dikirim controller --}}
+                    <input type="hidden" name="appointment_date" value="{{ $requestData->date }}">
+                    <input type="hidden" name="appointment_time" value="{{ $requestData->time }}">
+
+                    <!-- 1. Data Pasien -->
                     <div>
-                        <h3 class="font-bold text-gray-800">Dr. Andi Budiman, Sp.A</h3>
-                        <p class="text-sm text-gray-600">Dokter Spesialis Anak</p>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">1. Data Pasien</h3>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                                <input type="text" value="{{ Auth::user()->name }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
+                                <input type="text" value="{{ $pasien->phone_number ?? '-' }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100" readonly>
+                                <p class="text-xs text-gray-500 mt-1">*Ubah nomor telepon di menu Profil Saya</p>
+                            </div>
+                            <div>
+                                <label for="complaint" class="block text-sm font-medium text-gray-700">Keluhan
+                                    Singkat</label>
+                                <textarea id="complaint" name="complaint" rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required></textarea>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Detail Janji Temu -->
-                <div class="mt-6 space-y-3 text-gray-700">
-                    <div class="flex justify-between">
-                        <span class="font-medium">Tanggal</span>
-                        <span>Rabu, 25 September 2025</span>
+                    <!-- 2. Metode Pembayaran -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">2. Pembayaran</h3>
+                        <div class="space-y-4">
+                            <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-blue-500">
+                                <input name="payment_method" type="radio" value="midtrans"
+                                    class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
+                                <span class="ml-3 font-medium text-gray-800">Pembayaran Online (Midtrans)</span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="font-medium">Waktu</span>
-                        <span>09:00 WIB</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="font-medium">Lokasi</span>
-                        <span>RS Sehat Sentosa</span>
-                    </div>
-                </div>
 
-                <!-- Detail Biaya -->
-                <div class="mt-6 border-t pt-4 space-y-3">
-                    <div class="flex justify-between text-gray-700">
-                        <span>Biaya Konsultasi</span>
-                        <span>Rp 250.000</span>
+                    <!-- Tombol Aksi -->
+                    <div class="pt-5">
+                        <button type="submit"
+                            class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition">
+                            Konfirmasi Booking
+                        </button>
                     </div>
-                    <div class="flex justify-between text-gray-700">
-                        <span>Biaya Layanan</span>
-                        <span>Rp 5.000</span>
-                    </div>
-                    <div class="flex justify-between font-bold text-lg text-gray-800 mt-2">
-                        <span>Total Pembayaran</span>
-                        <span>Rp 255.000</span>
-                    </div>
-                </div>
+                </form>
+            </div>
 
-                <!-- Tombol Aksi -->
-                <div class="mt-8">
-                    <button
-                        class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
-                        Konfirmasi dan Bayar
-                    </button>
-                    <p class="text-xs text-gray-500 text-center mt-4">
-                        Dengan melanjutkan, Anda menyetujui <a href="#" class="text-blue-600">Syarat & Ketentuan</a>
-                        kami.
-                    </p>
+            <!-- Kolom Ringkasan -->
+            <div class="lg:col-span-1">
+                <div class="bg-gray-50 rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold text-gray-800 border-b pb-4">Ringkasan</h3>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <!-- Cek foto dokter -->
+                            <img class="h-16 w-16 rounded-lg object-cover"
+                                src="{{ $dokter->dokter->photo_url ? asset($dokter->dokter->photo_url) : 'https://placehold.co/400x400?text=' . urlencode($dokter->name) }}"
+                                alt="{{ $dokter->name }}">
+                            <div>
+                                <p class="font-bold text-gray-900">{{ $dokter->name }}</p>
+                                <p class="text-sm text-gray-600">{{ $dokter->dokter->specialization ?? 'Dokter Umum' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-4 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Tanggal</span>
+                                <span class="font-medium text-gray-800">{{ $dateFormatted }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Waktu</span>
+                                <span class="font-medium text-gray-800">{{ $time }} WIB</span>
+                            </div>
+                        </div>
+
+                        @php
+                            $biaya = $dokter->dokter->consultation_fee ?? 150000;
+                            $admin = 5000;
+                            $total = $biaya + $admin;
+                        @endphp
+
+                        <div class="border-t pt-4 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Biaya Konsultasi</span>
+                                <span class="font-medium text-gray-800">Rp {{ number_format($biaya, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Biaya Admin</span>
+                                <span class="font-medium text-gray-800">Rp {{ number_format($admin, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                        <div class="border-t pt-4">
+                            <div class="flex justify-between font-bold text-base">
+                                <span class="text-gray-900">Total</span>
+                                <span class="text-blue-600">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 @endsection

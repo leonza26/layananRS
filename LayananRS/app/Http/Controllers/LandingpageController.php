@@ -32,21 +32,24 @@ class LandingpageController extends Controller
     // jadwal dokter page
     public function jadwalDokter($id)
     {
-        $dokter = User::with('dokter')->where('role', '1')->findOrFail($id);
+            // 1. $id di sini adalah User ID
+        $userDokter = User::with('dokter')->where('role', '1')->findOrFail($id);
 
-        // Set locale Carbon ke bahasa Indonesia
+        // Ambil ID dari tabel 'doctors', bukan tabel 'users'
+        $realDoctorId = $userDokter->dokter->id;
+
         Carbon::setLocale('id');
-
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
 
-        // Ambil semua jadwal dokter untuk rentang tanggal minggu ini
-        $schedules = DoctorSchedule::where('dokter_id', $dokter->id)
+        // 2. Gunakan nama kolom yang sesuai di DB (dokter_id) dan ID yang benar ($realDoctorId)
+        $schedules = DoctorSchedule::where('dokter_id', $realDoctorId)
             ->whereBetween('date', [$startOfWeek->format('Y-m-d'), $endOfWeek->format('Y-m-d')])
             ->get()
-            ->keyBy('date'); // Gunakan tanggal sebagai kunci
+            ->keyBy('date');
 
-        $appointments = Appointment::where('doctor_id', $dokter->id)
+        // 3. Pastikan pencarian appointment juga menggunakan $realDoctorId
+        $appointments = Appointment::where('doctor_id', $realDoctorId)
             ->whereBetween('appointment_time', [$startOfWeek, $endOfWeek])
             ->get()
             ->pluck('appointment_time')
@@ -70,13 +73,13 @@ class LandingpageController extends Controller
                 'status' => 'Tidak Berpraktik'
             ];
 
-            // Cek jika ada jadwal untuk tanggal ini dan aktif
             if (isset($schedules[$dateKey]) && $schedules[$dateKey]->is_active) {
                 $schedule = $schedules[$dateKey];
                 $startTime = Carbon::parse($schedule->start_time);
                 $endTime = Carbon::parse($schedule->end_time);
 
-                $period = CarbonPeriod::create($startTime, '30 minutes', $endTime->subMinutes(30));
+                // Membuat slot per 30 menit
+                $period = CarbonPeriod::create($startTime, '30 minutes', $endTime->copy()->subMinutes(30));
 
                 $availableSlots = [];
                 foreach ($period as $slot) {
@@ -101,7 +104,7 @@ class LandingpageController extends Controller
         $weekRange = $startOfWeek->format('d M') . ' - ' . $endOfWeek->format('d M Y');
 
         return view('Landing.jadwal_dokter', [
-            'dokters' => $dokter,
+            'dokters' => $userDokter,
             'weeklySchedule' => $weeklySchedule,
             'weekRange' => $weekRange
         ]);
