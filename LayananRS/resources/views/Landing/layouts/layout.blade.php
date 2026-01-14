@@ -163,9 +163,9 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Dukungan</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Kontak Kami</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
+                        <li><a href="{{ route('faq') }}" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="{{ route('kontak.kami') }}" class="text-gray-400 hover:text-white">Kontak Kami</a></li>
+                        <li><a href="{{ route('kebijakan.privasi') }}" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
                     </ul>
                 </div>
                 <!-- Kolom 4: Kontak -->
