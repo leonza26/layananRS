@@ -139,6 +139,9 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
             // cancel booking
             Route::delete('/booking/{appointment}/cancel', 'cancelBooking')->name('pasien.booking.cancel');
 
+            // payment
+            Route::get('/booking/payment/{id}', 'showPayment')->name('pasien.booking.payment');
+
         });
 
     });

@@ -3,122 +3,147 @@
 @section('title', 'Buat Janji Temu')
 
 @section('content')
-<div class="bg-white rounded-lg shadow p-6">
-    <!-- Header Halaman -->
-    <div class="border-b pb-4 mb-6">
-        <div class="flex items-center space-x-2 text-sm mb-2">
-             <a href="{{ route('jadwal.dokter', ['id' => $dokter->id]) }}" class="text-blue-600 hover:text-blue-800">Detail Dokter</a>
-             <svg class="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-            <span class="text-gray-500">Konfirmasi Janji Temu</span>
+    <div class="bg-white rounded-lg shadow p-6">
+        <!-- Header -->
+        <div class="border-b pb-4 mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800">Konfirmasi Booking</h2>
+            <p class="text-gray-500 mt-1">Periksa kembali data Anda sebelum melanjutkan ke pembayaran.</p>
         </div>
-        <h2 class="text-2xl font-semibold text-gray-800">Formulir Booking</h2>
-        <p class="text-gray-500 mt-1">Lengkapi data diri dan pembayaran untuk menyelesaikan janji temu.</p>
-    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Kolom Form -->
-        <div class="lg:col-span-2">
-            <form action="{{ route('pasien.booking.store') }}" method="POST" class="space-y-8">
-                @csrf
-                {{-- Data tersembunyi untuk dikirim --}}
-                <input type="hidden" name="dokter_id" value="{{ $dokter->id }}">
-                <input type="hidden" name="pasien_id" value="{{ $pasien->id }}">
-                <input type="hidden" name="appointment_date" value="{{ $request->date }}">
-                <input type="hidden" name="appointment_time" value="{{ $request->time }}">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Kolom Kiri: Form Data -->
+            <div class="lg:col-span-2">
+                <form action="{{ route('pasien.booking.store') }}" method="POST" class="space-y-8">
+                    @csrf
 
-                <!-- 1. Data Pasien -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-4">1. Data Pasien</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <label for="full_name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                            <input type="text" name="full_name" id="full_name" value="{{ Auth::user()->name }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>
-                        </div>
-                        <div>
-                            <label for="phone_number" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                            <input type="tel" name="phone_number" id="phone_number" value="{{ $pasien->no_telepon ?? 'Belum diisi' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100" readonly>
-                        </div>
-                        <div class="sm:col-span-2">
-                             <label for="complaint" class="block text-sm font-medium text-gray-700">Keluhan Singkat (Opsional)</label>
-                             <textarea id="complaint" name="complaint" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Contoh: Demam dan sakit kepala selama 2 hari."></textarea>
+                    {{-- Data Hidden untuk Controller --}}
+                    <input type="hidden" name="dokter_id" value="{{ $dokter->id }}">
+                    <input type="hidden" name="appointment_date" value="{{ $requestData->date }}">
+                    <input type="hidden" name="appointment_time" value="{{ $requestData->time }}">
+
+                    {{-- Default Payment Method ke 'midtrans' --}}
+                    <input type="hidden" name="payment_method" value="midtrans">
+
+                    <!-- 1. Data Pasien -->
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            1. Data Pasien
+                        </h3>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                                <input type="text" value="{{ Auth::user()->name }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 bg-white text-gray-600 shadow-sm"
+                                    readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
+                                <input type="text" value="{{ $pasien->phone_number ?? '-' }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 bg-white text-gray-600 shadow-sm"
+                                    readonly>
+                            </div>
+                            <div>
+                                <label for="complaint" class="block text-sm font-medium text-gray-700">Keluhan Singkat <span
+                                        class="text-red-500">*</span></label>
+                                <textarea id="complaint" name="complaint" rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    placeholder="Contoh: Demam tinggi sejak kemarin sore" required></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                 <!-- 2. Metode Pembayaran -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-4">2. Pilih Metode Pembayaran</h3>
+                    <!-- 2. Informasi Pembayaran -->
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-100">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                </path>
+                            </svg>
+                            2. Pembayaran
+                        </h3>
+                        <p class="text-sm text-blue-700 mb-0">
+                            Pembayaran akan diproses secara aman melalui <strong>Payment Gateway</strong>. Anda dapat
+                            memilih metode pembayaran (QRIS, GoPay, Transfer Bank, dll) pada langkah selanjutnya.
+                        </p>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="pt-2">
+                        <button type="submit"
+                            class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition shadow-lg flex justify-center items-center">
+                            <span>Lanjut ke Pembayaran</span>
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Kolom Kanan: Ringkasan -->
+            <div class="lg:col-span-1">
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold text-gray-800 border-b pb-4 mb-4">Ringkasan Pesanan</h3>
+
                     <div class="space-y-4">
-                        <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-blue-500">
-                            <input name="payment_method" type="radio" value="virtual_account" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" required>
-                            <span class="ml-3 font-medium text-gray-800">Virtual Account</span>
-                        </label>
-                         <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:border-blue-500">
-                            <input name="payment_method" type="radio" value="qris" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" required>
-                            <span class="ml-3 font-medium text-gray-800">QRIS</span>
-                        </label>
-                    </div>
-                     @error('payment_method')
-                        <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
-                    @enderror
-                </div>
+                        <!-- Info Dokter -->
+                        <div class="flex items-center space-x-4">
+                            <img class="h-14 w-14 rounded-full object-cover border-2 border-white shadow-sm"
+                                src="{{ $dokter->dokter->photo_url ? asset($dokter->dokter->photo_url) : 'https://placehold.co/400x400?text=' . urlencode($dokter->name) }}"
+                                alt="{{ $dokter->name }}">
+                            <div>
+                                <p class="font-bold text-gray-900 text-sm">{{ $dokter->name }}</p>
+                                <p class="text-xs text-gray-500">{{ $dokter->dokter->specialization ?? 'Dokter Umum' }}</p>
+                            </div>
+                        </div>
 
-                 <!-- Tombol Aksi -->
-                <div class="pt-5">
-                    <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Konfirmasi dan Lanjutkan Pembayaran
-                    </button>
-                </div>
-            </form>
-        </div>
+                        <!-- Detail Waktu -->
+                        <div class="bg-gray-50 p-3 rounded-md space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Tanggal</span>
+                                <span class="font-medium text-gray-800">{{ $dateFormatted }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Jam</span>
+                                <span class="font-medium text-gray-800">{{ $requestData->time }} WIB</span>
+                            </div>
+                        </div>
 
-        <!-- Kolom Ringkasan -->
-        <div class="lg:col-span-1">
-            <div class="bg-gray-50 rounded-lg p-6 sticky top-24">
-                <h3 class="text-lg font-semibold text-gray-800 border-b pb-4">Ringkasan Janji Temu</h3>
-                <div class="mt-4 space-y-4">
-                    <div class="flex items-center space-x-4">
-                        <img class="h-16 w-16 rounded-lg object-cover" src="{{ $dokter->dokter->photo_url ? asset('storage/' . $dokter->dokter->photo_url) : 'https://placehold.co/400x400/3B82F6/FFFFFF?text=' . urlencode($dokter->name) }}" alt="{{ $dokter->name }}">
-                        <div>
-                            <p class="font-bold text-gray-900">{{ $dokter->name }}</p>
-                            <p class="text-sm text-gray-600">{{ $dokter->dokter->specialization }}</p>
+                        @php
+                            $biaya = $dokter->dokter->consultation_fee ?? 150000;
+                            $admin = 5000;
+                            $total = $biaya + $admin;
+                        @endphp
+
+                        <!-- Rincian Biaya -->
+                        <div class="space-y-2 pt-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Biaya Konsultasi</span>
+                                <span class="font-medium text-gray-900">Rp {{ number_format($biaya, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Biaya Layanan</span>
+                                <span class="font-medium text-gray-900">Rp {{ number_format($admin, 0, ',', '.') }}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="border-t pt-4 space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Tanggal</span>
-                            <span class="font-medium text-gray-800">{{ $date }}</span>
-                        </div>
-                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Waktu</span>
-                            <span class="font-medium text-gray-800">{{ $time }} WIB</span>
-                        </div>
-                    </div>
-                    @php
-                        $biayaKonsultasi = $dokter->dokter->harga_konsultasi ?? 150000;
-                        $biayaAdmin = 5000;
-                        $total = $biayaKonsultasi + $biayaAdmin;
-                    @endphp
-                    <div class="border-t pt-4 space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Biaya Konsultasi</span>
-                            <span class="font-medium text-gray-800">Rp {{ number_format($biayaKonsultasi, 0, ',', '.') }}</span>
-                        </div>
-                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Biaya Admin</span>
-                            <span class="font-medium text-gray-800">Rp {{ number_format($biayaAdmin, 0, ',', '.') }}</span>
-                        </div>
-                    </div>
-                     <div class="border-t pt-4">
-                        <div class="flex justify-between font-bold text-base">
-                            <span class="text-gray-900">Total Pembayaran</span>
-                            <span class="text-blue-600">Rp {{ number_format($total, 0, ',', '.') }}</span>
+
+                        <div class="border-t border-dashed border-gray-300 pt-4 mt-2">
+                            <div class="flex justify-between items-end">
+                                <span class="text-gray-900 font-bold">Total</span>
+                                <span class="text-2xl font-bold text-blue-600">Rp
+                                    {{ number_format($total, 0, ',', '.') }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
-

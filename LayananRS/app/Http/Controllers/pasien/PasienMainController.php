@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\pasien;
 
 use Carbon\Carbon;
+use Midtrans\Snap;
 use App\Models\User;
+use Midtrans\Config;
 use App\Models\Pasien;
 use App\Models\Payment;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Models\DoctorSchedule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,98 +56,131 @@ class PasienMainController extends Controller
     // booking page
     public function booking(Request $request)
     {
+        // 1. Validasi
         $request->validate([
             'dokter_id' => 'required|exists:users,id',
-            'date' => 'required|date_format:Y-m-d',
-            'time' => 'required|date_format:H:i',
-        ]);
-
-        $dokter = User::with('dokter')->findOrFail($request->dokter_id);
-
-        // Format tanggal untuk tampilan
-        $dateFormatted = Carbon::parse($request->date)->translatedFormat('l, d F Y');
-        $time = $request->time;
-
-        // LOGIKA PERBAIKAN DI SINI:
-        $user = Auth::user();
-        $pasien = $user->pasien; // Cek relasi
-
-        // Jika data pasien belum ada di tabel 'pasiens', buatkan sekarang!
-        if (!$pasien) {
-            $pasien = Pasien::create([
-                'user_id' => $user->id,
-                // Isi field lain dengan null atau default jika ada
-                'phone_number' => null,
-                'address' => null
-            ]);
-
-            // Refresh relasi agar data terbaca
-            $user->refresh();
-            $pasien = $user->pasien;
-        }
-
-        return view('pasien.booking_dokter', [
-            'dokter' => $dokter,
-            'dateFormatted' => $dateFormatted, // Kirim tanggal yg sudah diformat
-            'time' => $time,
-            'pasien' => $pasien,
-            'requestData' => $request // Kirim request dengan nama berbeda agar tidak bentrok
-        ]);
-    }
-
-    // store booking
-    public function storeBooking(Request $request)
-    {
-        // Validasi
-        $request->validate([
-            'dokter_id' => 'required|exists:users,id',
-            // 'pasien_id' => 'required', // HAPUS validasi ini, kita ambil dari Auth biar aman
             'appointment_date' => 'required|date_format:Y-m-d',
             'appointment_time' => 'required|date_format:H:i',
-            'payment_method' => 'required|string',
             'complaint' => 'nullable|string',
         ]);
 
-        // Ambil Pasien ID dari User yang Login (Lebih Aman)
-        // Gunakan firstOrCreate untuk jaga-jaga jika storeBooking ditembak langsung tanpa lewat halaman booking
         $pasien = Pasien::firstOrCreate(['user_id' => Auth::id()]);
 
-        // Ambil data dokter untuk hitung biaya
         $dokterUser = User::with('dokter')->findOrFail($request->dokter_id);
-        $consultation_fee = $dokterUser->dokter->consultation_fee ?? 150000; // Default jika null
+        $biayaKonsultasi = $dokterUser->dokter->consultation_fee ?? 150000;
+        $biayaAdmin = 5000;
+        $totalBayar = $biayaKonsultasi + $biayaAdmin;
 
         $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
 
-        // Cek apakah slot sudah diambil orang lain
-        $existingAppointment = Appointment::where('doctor_id', $dokterUser->dokter->id) // Pakai ID tabel doctors
+        // --- LOGIKA MENCARI SCHEDULE ID YANG BENAR ---
+        // Kita cari jadwal dokter tersebut pada tanggal yang dipilih
+        // Pastikan nama kolom 'doctor_id' atau 'dokter_id' sesuai database Anda
+        $schedule = DoctorSchedule::where('doctor_id', $dokterUser->dokter->id)
+            ->where('date', $request->appointment_date)
+            ->first();
+
+        // Jika jadwal tidak ditemukan di database (misal belum digenerate), kita stop
+        if (!$schedule) {
+            return redirect()->back()->with('error', 'Jadwal dokter tidak ditemukan di sistem untuk tanggal ini.');
+        }
+        // ---------------------------------------------
+
+        // Cek Slot (Race Condition & Self-Booking Check)
+        $existingAppointment = Appointment::where('doctor_id', $dokterUser->dokter->id)
             ->where('appointment_time', $appointmentDateTime)
-            ->exists();
+            ->where('status', '!=', 'cancelled') // Abaikan yang sudah dicancel
+            ->first(); // Gunakan first() agar bisa kita cek isinya
 
         if ($existingAppointment) {
-            return redirect()->back()->with('error', 'Maaf, slot waktu tersebut sudah terisi.');
+            // Cek apakah janji temu ini milik user sendiri yang statusnya masih pending?
+            if ($existingAppointment->patient_id == $pasien->id && $existingAppointment->status == 'pending') {
+                // Jika ya, jangan error, tapi arahkan lanjut ke pembayaran
+                return redirect()->route('pasien.booking.payment', ['id' => $existingAppointment->id])
+                    ->with('info', 'Anda sudah memesan jadwal ini. Silakan selesaikan pembayaran.');
+            }
+
+            // Jika milik orang lain, baru tolak
+            return redirect()->back()->with('error', 'Maaf, slot waktu tersebut sudah terisi oleh pasien lain.');
         }
 
-        // Buat Janji Temu
+        // 4. Simpan Appointment
         $appointment = Appointment::create([
-            'doctor_id' => $dokterUser->dokter->id, // Masukkan ke tabel appointments (pake ID tabel doctors)
-            'patient_id' => $pasien->id,            // Pake ID tabel patients
-            'schedule_id' => 1, // Opsional: Logic schedule_id nanti bisa disempurnakan, sementara hardcode/null kalau boleh null
+            'doctor_id' => $dokterUser->dokter->id,
+            'patient_id' => $pasien->id,
+            'schedule_id' => $schedule->id, // GUNAKAN ID JADWAL ASLI DARI DATABASE
             'appointment_time' => $appointmentDateTime,
             'status' => 'pending',
             'complaint' => $request->complaint,
         ]);
 
-        // Buat Pembayaran
-        Payment::create([
+        // 5. Simpan Payment
+        $payment = Payment::create([
             'appointment_id' => $appointment->id,
-            'amount' => $consultation_fee + 5000,
-            'payment_method' => $request->payment_method,
+            'amount' => $totalBayar,
+            'payment_method' => 'midtrans',
             'status' => 'pending',
         ]);
 
-        return redirect()->route('pasien.riwayat')->with('success', 'Janji temu berhasil dibuat.');
+        // 6. Integrasi Midtrans
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production');
+        Config::$isSanitized = config('midtrans.is_sanitized');
+        Config::$is3ds = config('midtrans.is_3ds');
+
+        $orderId = 'BOOK-' . $appointment->id . '-' . time();
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $orderId,
+                'gross_amount' => (int) $totalBayar,
+            ],
+            'customer_details' => [
+                'first_name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+                'phone' => $pasien->phone_number ?? '08123456789',
+            ],
+            'item_details' => [
+                [
+                    'id' => 'DOC-' . $dokterUser->id,
+                    'price' => (int) $biayaKonsultasi,
+                    'quantity' => 1,
+                    'name' => 'Konsultasi Dr. ' . $dokterUser->name,
+                ],
+                [
+                    'id' => 'ADM-FEE',
+                    'price' => (int) $biayaAdmin,
+                    'quantity' => 1,
+                    'name' => 'Biaya Layanan',
+                ]
+            ],
+        ];
+
+        try {
+            $snapToken = Snap::getSnapToken($params);
+
+            $payment->snap_token = $snapToken;
+            $payment->transaction_id = $orderId;
+            $payment->save();
+
+            return redirect()->route('pasien.booking.payment', ['id' => $appointment->id]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
+        }
     }
 
+    // HALAMAN PEMBAYARAN KHUSUS (Step baru)
+    public function showPayment($id)
+    {
+        $appointment = Appointment::with(['dokter.user', 'payment'])->findOrFail($id);
+
+        // Pastikan appointment ini milik user yang login
+        if ($appointment->patient_id !== Auth::user()->pasien->id) {
+            abort(403);
+        }
+
+        return view('pasien.payment', compact('appointment'));
+    }
     // cancel booking
     public function cancelBooking(Appointment $appointment)
     {

@@ -49,3 +49,6 @@ class DokterSeeder extends Seeder
 
 // user : jamelah@gmail.com
 // pass : jamelah123#
+
+// user: isnaini@gmail.com
+// pass: isnaini123#
