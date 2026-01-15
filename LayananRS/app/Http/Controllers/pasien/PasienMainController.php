@@ -53,12 +53,53 @@ class PasienMainController extends Controller
         return view('pasien.riwayat_janjitemu', compact('upcomingAppointments', 'completedAppointments'));
     }
 
-    // booking page
+    // booking page - FORM TAMPIL
     public function booking(Request $request)
+    {
+        $request->validate([
+            'dokter_id' => 'required|exists:dokters,id',
+            'date' => 'required|date_format:Y-m-d',
+            'time' => 'required|date_format:H:i',
+        ]);
+
+        // Find the doctor by their actual ID in the 'dokters' table
+        $dokter = \App\Models\Dokter::with('user')->findOrFail($request->dokter_id);
+
+        $biayaKonsultasi = $dokter->consultation_fee ?? 150000;
+        $biayaAdmin = 5000;
+        $totalBayar = $biayaKonsultasi + $biayaAdmin;
+
+        $appointmentDateTime = Carbon::parse($request->date . ' ' . $request->time);
+
+        // Check if the slot is already taken (Race Condition guard)
+        $existingAppointment = Appointment::where('doctor_id', $request->dokter_id)
+            ->where('appointment_time', $appointmentDateTime)
+            ->where('status', '!=', 'cancelled')
+            ->first();
+
+        // If slot is taken, redirect back to schedule with an error
+        if ($existingAppointment) {
+            return redirect()->route('jadwal.dokter', ['id' => $dokter->user->id])
+                ->with('error', 'Maaf, slot waktu tersebut sudah tidak tersedia. Silakan pilih jadwal lain.');
+        }
+
+        return view('pasien.booking_dokter', [
+            'dokter' => $dokter,
+            'appointment_date' => $request->date,
+            'appointment_time' => $request->time,
+            'biaya_konsultasi' => $biayaKonsultasi,
+            'biaya_admin' => $biayaAdmin,
+            'total_bayar' => $totalBayar,
+        ]);
+    }
+
+
+    // PROSES SIMPAN BOOKING
+    public function storeBooking(Request $request)
     {
         // 1. Validasi
         $request->validate([
-            'dokter_id' => 'required|exists:users,id',
+            'dokter_id' => 'required|exists:dokters,id', // Diubah ke dokters.id
             'appointment_date' => 'required|date_format:Y-m-d',
             'appointment_time' => 'required|date_format:H:i',
             'complaint' => 'nullable|string',
@@ -66,49 +107,43 @@ class PasienMainController extends Controller
 
         $pasien = Pasien::firstOrCreate(['user_id' => Auth::id()]);
 
-        $dokterUser = User::with('dokter')->findOrFail($request->dokter_id);
-        $biayaKonsultasi = $dokterUser->dokter->consultation_fee ?? 150000;
+        // Diubah: Cari dokter berdasarkan ID dari tabel 'dokters'
+        $dokter = \App\Models\Dokter::with('user')->findOrFail($request->dokter_id);
+        $biayaKonsultasi = $dokter->consultation_fee ?? 150000;
         $biayaAdmin = 5000;
         $totalBayar = $biayaKonsultasi + $biayaAdmin;
 
         $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
 
         // --- LOGIKA MENCARI SCHEDULE ID YANG BENAR ---
-        // Kita cari jadwal dokter tersebut pada tanggal yang dipilih
-        // Pastikan nama kolom 'doctor_id' atau 'dokter_id' sesuai database Anda
-        $schedule = DoctorSchedule::where('doctor_id', $dokterUser->dokter->id)
+        $schedule = DoctorSchedule::where('dokter_id', $dokter->id) // Gunakan $dokter->id
             ->where('date', $request->appointment_date)
             ->first();
 
-        // Jika jadwal tidak ditemukan di database (misal belum digenerate), kita stop
         if (!$schedule) {
             return redirect()->back()->with('error', 'Jadwal dokter tidak ditemukan di sistem untuk tanggal ini.');
         }
         // ---------------------------------------------
 
         // Cek Slot (Race Condition & Self-Booking Check)
-        $existingAppointment = Appointment::where('doctor_id', $dokterUser->dokter->id)
+        $existingAppointment = Appointment::where('doctor_id', $dokter->id) // Gunakan $dokter->id
             ->where('appointment_time', $appointmentDateTime)
-            ->where('status', '!=', 'cancelled') // Abaikan yang sudah dicancel
-            ->first(); // Gunakan first() agar bisa kita cek isinya
+            ->where('status', '!=', 'cancelled')
+            ->first();
 
         if ($existingAppointment) {
-            // Cek apakah janji temu ini milik user sendiri yang statusnya masih pending?
             if ($existingAppointment->patient_id == $pasien->id && $existingAppointment->status == 'pending') {
-                // Jika ya, jangan error, tapi arahkan lanjut ke pembayaran
                 return redirect()->route('pasien.booking.payment', ['id' => $existingAppointment->id])
                     ->with('info', 'Anda sudah memesan jadwal ini. Silakan selesaikan pembayaran.');
             }
-
-            // Jika milik orang lain, baru tolak
             return redirect()->back()->with('error', 'Maaf, slot waktu tersebut sudah terisi oleh pasien lain.');
         }
 
         // 4. Simpan Appointment
         $appointment = Appointment::create([
-            'doctor_id' => $dokterUser->dokter->id,
+            'doctor_id' => $dokter->id, // Gunakan $dokter->id
             'patient_id' => $pasien->id,
-            'schedule_id' => $schedule->id, // GUNAKAN ID JADWAL ASLI DARI DATABASE
+            'schedule_id' => $schedule->id,
             'appointment_time' => $appointmentDateTime,
             'status' => 'pending',
             'complaint' => $request->complaint,
@@ -142,10 +177,10 @@ class PasienMainController extends Controller
             ],
             'item_details' => [
                 [
-                    'id' => 'DOC-' . $dokterUser->id,
+                    'id' => 'DOC-' . $dokter->user->id, // Diubah ke $dokter->user->id
                     'price' => (int) $biayaKonsultasi,
                     'quantity' => 1,
-                    'name' => 'Konsultasi Dr. ' . $dokterUser->name,
+                    'name' => 'Konsultasi Dr. ' . $dokter->user->name, // Diubah ke $dokter->user->name
                 ],
                 [
                     'id' => 'ADM-FEE',

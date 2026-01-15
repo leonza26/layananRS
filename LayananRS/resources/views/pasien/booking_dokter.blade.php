@@ -13,16 +13,15 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Kolom Kiri: Form Data -->
             <div class="lg:col-span-2">
+                {{-- Menggunakan route('pasien.booking.store') yang mengarah ke POST /booking --}}
                 <form action="{{ route('pasien.booking.store') }}" method="POST" class="space-y-8">
                     @csrf
 
                     {{-- Data Hidden untuk Controller --}}
+                    {{-- Variabel ini dikirim dari method `booking` di PasienMainController --}}
                     <input type="hidden" name="dokter_id" value="{{ $dokter->id }}">
-                    <input type="hidden" name="appointment_date" value="{{ $requestData->date }}">
-                    <input type="hidden" name="appointment_time" value="{{ $requestData->time }}">
-
-                    {{-- Default Payment Method ke 'midtrans' --}}
-                    <input type="hidden" name="payment_method" value="midtrans">
+                    <input type="hidden" name="appointment_date" value="{{ $appointment_date }}">
+                    <input type="hidden" name="appointment_time" value="{{ $appointment_time }}">
 
                     <!-- 1. Data Pasien -->
                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
@@ -38,13 +37,14 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
                                 <input type="text" value="{{ Auth::user()->name }}"
-                                    class="mt-1 block w-full rounded-md border-gray-300 bg-white text-gray-600 shadow-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-200 text-gray-600 shadow-sm"
                                     readonly>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                                <input type="text" value="{{ $pasien->phone_number ?? '-' }}"
-                                    class="mt-1 block w-full rounded-md border-gray-300 bg-white text-gray-600 shadow-sm"
+                                {{-- Mengambil data pasien dari relasi user yang sedang login --}}
+                                <input type="text" value="{{ Auth::user()->pasien->phone_number ?? '-' }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-200 text-gray-600 shadow-sm"
                                     readonly>
                             </div>
                             <div>
@@ -95,12 +95,13 @@
                     <div class="space-y-4">
                         <!-- Info Dokter -->
                         <div class="flex items-center space-x-4">
+                            {{-- Menggunakan $dokter->user->name untuk nama dan $dokter->photo_url untuk foto --}}
                             <img class="h-14 w-14 rounded-full object-cover border-2 border-white shadow-sm"
-                                src="{{ $dokter->dokter->photo_url ? asset($dokter->dokter->photo_url) : 'https://placehold.co/400x400?text=' . urlencode($dokter->name) }}"
-                                alt="{{ $dokter->name }}">
+                                src="{{ $dokter->photo_url ? asset('storage/' . $dokter->photo_url) : 'https://placehold.co/400x400?text=' . urlencode($dokter->user->name) }}"
+                                alt="{{ $dokter->user->name }}">
                             <div>
-                                <p class="font-bold text-gray-900 text-sm">{{ $dokter->name }}</p>
-                                <p class="text-xs text-gray-500">{{ $dokter->dokter->specialization ?? 'Dokter Umum' }}</p>
+                                <p class="font-bold text-gray-900 text-sm">{{ $dokter->user->name }}</p>
+                                <p class="text-xs text-gray-500">{{ $dokter->specialization ?? 'Dokter Umum' }}</p>
                             </div>
                         </div>
 
@@ -108,29 +109,26 @@
                         <div class="bg-gray-50 p-3 rounded-md space-y-2">
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-500">Tanggal</span>
-                                <span class="font-medium text-gray-800">{{ $dateFormatted }}</span>
+                                {{-- Memformat variabel $appointment_date --}}
+                                <span class="font-medium text-gray-800">{{ \Carbon\Carbon::parse($appointment_date)->translatedFormat('l, d F Y') }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-500">Jam</span>
-                                <span class="font-medium text-gray-800">{{ $requestData->time }} WIB</span>
+                                {{-- Menggunakan variabel $appointment_time --}}
+                                <span class="font-medium text-gray-800">{{ $appointment_time }} WIB</span>
                             </div>
                         </div>
 
-                        @php
-                            $biaya = $dokter->dokter->consultation_fee ?? 150000;
-                            $admin = 5000;
-                            $total = $biaya + $admin;
-                        @endphp
-
                         <!-- Rincian Biaya -->
+                        {{-- Menggunakan variabel yang dikirim dari controller --}}
                         <div class="space-y-2 pt-2">
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Biaya Konsultasi</span>
-                                <span class="font-medium text-gray-900">Rp {{ number_format($biaya, 0, ',', '.') }}</span>
+                                <span class="font-medium text-gray-900">Rp {{ number_format($biaya_konsultasi, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Biaya Layanan</span>
-                                <span class="font-medium text-gray-900">Rp {{ number_format($admin, 0, ',', '.') }}</span>
+                                <span class="font-medium text-gray-900">Rp {{ number_format($biaya_admin, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -138,7 +136,7 @@
                             <div class="flex justify-between items-end">
                                 <span class="text-gray-900 font-bold">Total</span>
                                 <span class="text-2xl font-bold text-blue-600">Rp
-                                    {{ number_format($total, 0, ',', '.') }}</span>
+                                    {{ number_format($total_bayar, 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>
