@@ -21,4 +21,9 @@ class DoctorSchedule extends Model
     {
         return $this->belongsTo(Dokter::class);
     }
+
+    public function appointment()
+    {
+        return $this->hasOne(Appointment::class);
+    }
 }

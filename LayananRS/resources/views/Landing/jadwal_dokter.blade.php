@@ -68,7 +68,7 @@
                         @if ($day['status'] === 'Tersedia')
                             <div class="grid grid-cols-2 gap-2">
                                 @foreach ($day['slots'] as $slot)
-                                    <a href="{{ route('pasien.booking', ['dokter_id' => $dokters->dokter->id, 'date' => \Carbon\Carbon::parse($day['date'])->format('Y-m-d'), 'time' => $slot]) }}"
+                                    <a href="{{ route('pasien.booking', ['dokter_id' => $dokters->dokter->id, 'date' => $day['date_raw'], 'time' => $slot]) }}"
                                         class="px-3 py-2 text-sm text-center font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition">
                                         {{ $slot }}
                                     </a>

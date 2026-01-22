@@ -26,7 +26,7 @@
             <div class="border-t border-b border-gray-200 py-4 mb-6 space-y-3">
                 <div class="flex justify-between">
                     <span class="text-gray-600">Dokter</span>
-                    <span class="font-medium text-gray-800">{{ $appointment->dokter->user->name }}</span>
+                    <span class="font-medium text-gray-800">{{ $appointment->doctor->user->name }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">Jadwal</span>

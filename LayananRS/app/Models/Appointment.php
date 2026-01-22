@@ -19,6 +19,10 @@ class Appointment extends Model
         'status',
     ];
 
+    protected $casts = [
+        'appointment_time' => 'datetime',
+    ];
+
     // Relasi balik ke Patient
     public function patient()
     {
@@ -34,7 +38,7 @@ class Appointment extends Model
     // Relasi balik ke Schedule
     public function schedule()
     {
-        return $this->belongsTo(Schedule::class);
+        return $this->belongsTo(DoctorSchedule::class);
     }
 
     // Relasi One-to-One ke Payment

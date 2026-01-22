@@ -69,6 +69,7 @@ class LandingpageController extends Controller
             $dayInfo = [
                 'dayName' => $dayName,
                 'date' => $formattedDate,
+                'date_raw' => $dateKey,
                 'slots' => [],
                 'status' => 'Tidak Berpraktik'
             ];

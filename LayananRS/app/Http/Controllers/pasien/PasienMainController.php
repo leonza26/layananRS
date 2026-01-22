@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\pasien;
 
-use Carbon\Carbon;
-use Midtrans\Snap;
-use App\Models\User;
-use Midtrans\Config;
+use App\Http\Controllers\Controller;
+use App\Models\Appointment;
+use App\Models\DoctorSchedule;
 use App\Models\Pasien;
 use App\Models\Payment;
-use App\Models\Appointment;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\DoctorSchedule;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class PasienMainController extends Controller
 {
@@ -37,16 +37,16 @@ class PasienMainController extends Controller
         $pasienId = Auth::user()->pasien->id;
         $now = Carbon::now();
 
-        $appointments = Appointment::with('dokter.user')
+        $appointments = Appointment::with('doctor.user')
             ->where('pasien_id', $pasienId)
             ->orderBy('appointment_time', 'desc')
             ->get();
 
-        $upcomingAppointments = $appointments->filter(function ($appointment) use ($now) {
+        $upcomingAppointments = $appointments->filter(function ($appointment) {
             return Carbon::parse($appointment->appointment_time)->isFuture();
         });
 
-        $completedAppointments = $appointments->filter(function ($appointment) use ($now) {
+        $completedAppointments = $appointments->filter(function ($appointment) {
             return Carbon::parse($appointment->appointment_time)->isPast();
         });
 
@@ -69,7 +69,7 @@ class PasienMainController extends Controller
         $biayaAdmin = 5000;
         $totalBayar = $biayaKonsultasi + $biayaAdmin;
 
-        $appointmentDateTime = Carbon::parse($request->date . ' ' . $request->time);
+        $appointmentDateTime = Carbon::parse($request->date.' '.$request->time);
 
         // Check if the slot is already taken (Race Condition guard)
         $existingAppointment = Appointment::where('doctor_id', $request->dokter_id)
@@ -93,7 +93,6 @@ class PasienMainController extends Controller
         ]);
     }
 
-
     // PROSES SIMPAN BOOKING
     public function storeBooking(Request $request)
     {
@@ -113,17 +112,38 @@ class PasienMainController extends Controller
         $biayaAdmin = 5000;
         $totalBayar = $biayaKonsultasi + $biayaAdmin;
 
-        $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
+        $appointmentDateTime = Carbon::parse($request->appointment_date.' '.$request->appointment_time);
 
-        // --- LOGIKA MENCARI SCHEDULE ID YANG BENAR ---
+        // --- LOGIKA MENCARI SCHEDULE ID
         $schedule = DoctorSchedule::where('dokter_id', $dokter->id) // Gunakan $dokter->id
             ->where('date', $request->appointment_date)
+            ->whereTime('start_time', '<=', $request->appointment_time)
+            ->whereTime('end_time', '>=', $request->appointment_time)
+            ->where('is_active', 1)
             ->first();
 
-        if (!$schedule) {
+        if (! $schedule) {
             return redirect()->back()->with('error', 'Jadwal dokter tidak ditemukan di sistem untuk tanggal ini.');
         }
         // ---------------------------------------------
+
+        // 3. Validasi Waktu Appointment sesuai Jadwal Dokter
+        $appointmentDateTime = Carbon::parse(
+            $request->appointment_date.' '.$request->appointment_time
+        );
+
+        $scheduleStart = Carbon::parse(
+            $schedule->date.' '.$schedule->start_time
+        );
+
+        $scheduleEnd = Carbon::parse(
+            $schedule->date.' '.$schedule->end_time
+        );
+
+        if (! $appointmentDateTime->between($scheduleStart, $scheduleEnd)) {
+            return redirect()->back()
+                ->with('error', 'Waktu appointment berada di luar jadwal dokter.');
+        }
 
         // Cek Slot (Race Condition & Self-Booking Check)
         $existingAppointment = Appointment::where('doctor_id', $dokter->id) // Gunakan $dokter->id
@@ -136,6 +156,7 @@ class PasienMainController extends Controller
                 return redirect()->route('pasien.booking.payment', ['id' => $existingAppointment->id])
                     ->with('info', 'Anda sudah memesan jadwal ini. Silakan selesaikan pembayaran.');
             }
+
             return redirect()->back()->with('error', 'Maaf, slot waktu tersebut sudah terisi oleh pasien lain.');
         }
 
@@ -163,7 +184,7 @@ class PasienMainController extends Controller
         Config::$isSanitized = config('midtrans.is_sanitized');
         Config::$is3ds = config('midtrans.is_3ds');
 
-        $orderId = 'BOOK-' . $appointment->id . '-' . time();
+        $orderId = 'BOOK-'.$appointment->id.'-'.time();
 
         $params = [
             'transaction_details' => [
@@ -177,17 +198,17 @@ class PasienMainController extends Controller
             ],
             'item_details' => [
                 [
-                    'id' => 'DOC-' . $dokter->user->id, // Diubah ke $dokter->user->id
+                    'id' => 'DOC-'.$dokter->user->id,
                     'price' => (int) $biayaKonsultasi,
                     'quantity' => 1,
-                    'name' => 'Konsultasi Dr. ' . $dokter->user->name, // Diubah ke $dokter->user->name
+                    'name' => 'Konsultasi Dr. '.$dokter->user->name,
                 ],
                 [
                     'id' => 'ADM-FEE',
                     'price' => (int) $biayaAdmin,
                     'quantity' => 1,
                     'name' => 'Biaya Layanan',
-                ]
+                ],
             ],
         ];
 
@@ -200,14 +221,14 @@ class PasienMainController extends Controller
 
             return redirect()->route('pasien.booking.payment', ['id' => $appointment->id]);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memproses pembayaran: '.$e->getMessage());
         }
     }
 
     // HALAMAN PEMBAYARAN KHUSUS (Step baru)
     public function showPayment($id)
     {
-        $appointment = Appointment::with(['dokter.user', 'payment'])->findOrFail($id);
+        $appointment = Appointment::with(['doctor.user', 'payment'])->findOrFail($id);
 
         // Pastikan appointment ini milik user yang login
         if ($appointment->patient_id !== Auth::user()->pasien->id) {
@@ -216,11 +237,12 @@ class PasienMainController extends Controller
 
         return view('pasien.payment', compact('appointment'));
     }
+
     // cancel booking
     public function cancelBooking(Appointment $appointment)
     {
         // Otorisasi: Pastikan janji temu ini milik pasien yang sedang login
-        if ($appointment->pasien_id !== Auth::user()->pasien->id) {
+        if ($appointment->patient_id !== Auth::user()->pasien->id) {
             return redirect()->route('pasien.riwayat')->with('error', 'Anda tidak berwenang membatalkan janji temu ini.');
         }
 
