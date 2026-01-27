@@ -19,10 +19,22 @@ class PasienMainController extends Controller
     // summary
     public function index()
     {
-        // read data pasien di summary.blade.php
-        $pasien = User::where('role', '2')->findOrFail(Auth::id());
+        $user = Auth::user();
+        $pasien = $user->pasien;
 
-        return view('pasien.summary', compact('pasien'));
+        // Janji temu terdekat (yang belum selesai / batal)
+        $nextAppointment = Appointment::with(['doctor.user', 'payment'])
+            ->where('patient_id', $pasien->id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where('appointment_time', '>=', now())
+            ->orderBy('appointment_time', 'asc')
+            ->first();
+
+        return view('pasien.summary', compact(
+            'user',
+            'pasien',
+            'nextAppointment'
+        ));
     }
 
     // profile saya
@@ -38,17 +50,21 @@ class PasienMainController extends Controller
         $now = Carbon::now();
 
         $appointments = Appointment::with('doctor.user')
-            ->where('pasien_id', $pasienId)
+            ->where('patient_id', $pasienId)
             ->orderBy('appointment_time', 'desc')
             ->get();
 
-        $upcomingAppointments = $appointments->filter(function ($appointment) {
-            return Carbon::parse($appointment->appointment_time)->isFuture();
-        });
+        $upcomingAppointments = Appointment::with('doctor.user')
+            ->where('patient_id', $pasienId)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->orderBy('appointment_time', 'asc')
+            ->get();
 
-        $completedAppointments = $appointments->filter(function ($appointment) {
-            return Carbon::parse($appointment->appointment_time)->isPast();
-        });
+        $completedAppointments = Appointment::with('doctor.user')
+            ->where('patient_id', $pasienId)
+            ->where('status', 'completed')
+            ->orderBy('appointment_time', 'desc')
+            ->get();
 
         return view('pasien.riwayat_janjitemu', compact('upcomingAppointments', 'completedAppointments'));
     }
