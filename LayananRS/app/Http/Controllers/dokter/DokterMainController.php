@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\dokter;
 
-use App\Models\DoctorSchedule;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Dokter;
-use Carbon\Carbon;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\DoctorSchedule;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class DokterMainController extends Controller
 {
@@ -79,10 +80,48 @@ class DokterMainController extends Controller
 
 
     public function daftarJanjitemu(){
-        // read appointment list
-        $appointments = \App\Models\Appointment::all();
+        $dokter = Dokter::where('user_id', Auth::id())->firstOrFail();
+
+        $appointments = Appointment::with(['patient.user', 'payment'])
+            ->where('doctor_id', $dokter->id)
+            ->orderBy('appointment_time', 'asc')
+            ->get();
+
         return view('Dokter.daftar_janjitemu', compact('appointments'));
     }
+
+    public function confirmAppointment(Appointment $appointment)
+    {
+        $dokter = Dokter::where('user_id', Auth::id())->first();
+
+        if ($appointment->doctor_id !== $dokter->id) {
+            abort(403);
+        }
+
+        if ($appointment->payment?->status !== 'success') {
+            return back()->with('error', 'Pembayaran belum selesai.');
+        }
+
+        $appointment->update(['status' => 'confirmed']);
+
+        return back()->with('success', 'Janji temu berhasil dikonfirmasi.');
+    }
+
+
+    public function completeAppointment(Appointment $appointment)
+    {
+        $dokter = Dokter::where('user_id', Auth::id())->first();
+
+        if ($appointment->doctor_id !== $dokter->id) {
+            abort(403);
+        }
+
+        $appointment->update(['status' => 'completed']);
+
+        return back()->with('success', 'Janji temu ditandai sebagai selesai.');
+    }
+
+
 
     // riwayat pasien
     public function riwayatPasien()

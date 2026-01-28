@@ -28,7 +28,7 @@ Route::controller(LandingpageController::class)->group(function () {
     Route::get('/faq', 'faq')->name('faq');
     Route::get('/kontak_kami', 'kontakKami')->name('kontak.kami');
     Route::get('/kebijakan_privasi', 'kebijakanPrivasi')->name('kebijakan.privasi');
-    
+
 
 
 });
@@ -116,6 +116,13 @@ Route::middleware(['auth', 'verified', 'rolemanager:dokter'])->group(function ()
             Route::get('/profile_saya', 'profileSaya')->name('dokter.profile.saya');
             // notifikasi
             Route::get('/notifikasi', 'notifikasi')->name('dokter.notifikasi');
+            // dokter.php
+            Route::patch('/janji-temu/{appointment}/confirm', 'confirmAppointment')
+                ->name('dokter.appointment.confirm');
+
+            Route::patch('/janji-temu/{appointment}/complete', 'completeAppointment')
+                ->name('dokter.appointment.complete');
+
 
         });
 

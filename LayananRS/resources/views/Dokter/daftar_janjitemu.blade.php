@@ -67,48 +67,68 @@
                     <!-- Data Contoh 1: Menunggu -->
                     @forelse ($appointments as $appointment)
                         <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full"
-                                        src="https://placehold.co/100x100/E2E8F0/4A5568?text=AS" alt="">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full"
+                                            src="https://placehold.co/100x100/E2E8F0/4A5568?text=AS" alt="">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ $appointment->patient->user->name }}</div>
+                                        <div class="text-sm text-gray-500">{{ $appointment->patient->user->email }}</div>
+                                    </div>
                                 </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ $appointment->patient->name }}</div>
-                                    <div class="text-sm text-gray-500">{{ $appointment  }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">
+                                    {{ \Carbon\Carbon::parse($appointment->appointment_time)->translatedFormat('d F Y') }}
                                 </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Senin, 14 Okt 2025</div>
-                            <div class="text-sm text-gray-500">10:00 - 10:30 WIB</div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900 font-medium">Tatap Muka</div>
-                            <div class="text-sm text-gray-500 truncate w-40" title="Demam tinggi sudah 3 hari">Demam tinggi
-                                sudah 3 hari...</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Lunas (QRIS)
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                Menunggu Konfirmasi
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Detail</a>
-                            <a href="#" class="text-green-600 hover:text-green-900">Terima</a>
-                        </td>
-                    </tr>
+                                <div class="text-sm text-gray-500">
+                                    {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i') }} WIB</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900 font-medium">{{ $appointment->complaint }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    {{ $appointment->payment->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    {{ $appointment->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                @if ($appointment->status === 'pending' && $appointment->payment?->status === 'success')
+                                    <form action="{{ route('dokter.appointment.confirm', $appointment->id) }}"
+                                        method="POST" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                            Terima
+                                        </button>
+                                    </form>
+                                @elseif ($appointment->status === 'confirmed')
+                                    <form action="{{ route('dokter.appointment.complete', $appointment->id) }}"
+                                        method="POST" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                            Selesai
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-gray-400">—</span>
+                                @endif
+                            </td>
+                        </tr>
                     @empty
-                        
                     @endforelse
-                
+
 
                     <!-- Tambahkan baris data lainnya di sini -->
                 </tbody>
