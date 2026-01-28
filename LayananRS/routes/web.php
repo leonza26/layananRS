@@ -130,6 +130,8 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
             Route::get('/summary', 'index')->name('pasien');
             // profile saya
             Route::get('/profile_saya', 'profileSaya')->name('pasien.profile.saya');
+            // update profile
+            Route::put('/profile_saya', 'updateProfile')->name('pasien.profile.update');
             // riwayat
             Route::get('/riwayat', 'riwayat')->name('pasien.riwayat');
             // booking
@@ -142,6 +144,8 @@ Route::middleware(['auth', 'verified', 'rolemanager:pasien'])->group(function ()
             // payment
             Route::get('/booking/payment/{id}', 'showPayment')->name('pasien.booking.payment');
 
+            // detail appointment (fix route kuning)
+            Route::get('/appointment/{id}', 'showAppointment')->name('pasien.appointment.show');
         });
 
     });

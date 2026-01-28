@@ -194,7 +194,7 @@
                 <div class="flex items-center gap-6 text-xs font-medium text-gray-400">
                     <div class="flex items-center gap-2 group hover:text-white transition-colors" title="Laravel Framework">
                         <i class="fa-brands fa-laravel text-xl text-red-500 group-hover:scale-110 transition-transform"></i>
-                        <span>Laravel 11</span>
+                        <span>Laravel 12</span>
                     </div>
                     <span class="text-gray-600">|</span>
                     <div class="flex items-center gap-2 group hover:text-white transition-colors" title="Tailwind CSS">

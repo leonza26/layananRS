@@ -61,9 +61,12 @@
                         </th>
                     </tr>
                 </thead>
+
+
                 <tbody class="bg-white divide-y divide-gray-200">
                     <!-- Data Contoh 1: Menunggu -->
-                    <tr>
+                    @forelse ($appointments as $appointment)
+                        <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
@@ -71,8 +74,8 @@
                                         src="https://placehold.co/100x100/E2E8F0/4A5568?text=AS" alt="">
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Andi Saputra</div>
-                                    <div class="text-sm text-gray-500">081234567890</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $appointment->patient->name }}</div>
+                                    <div class="text-sm text-gray-500">{{ $appointment  }}</div>
                                 </div>
                             </div>
                         </td>
@@ -102,45 +105,10 @@
                             <a href="#" class="text-green-600 hover:text-green-900">Terima</a>
                         </td>
                     </tr>
-
-                    <!-- Data Contoh 2: Selesai -->
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full"
-                                        src="https://placehold.co/100x100/E2E8F0/4A5568?text=SL" alt="">
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Siti Lestari</div>
-                                    <div class="text-sm text-gray-500">08987654321</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Jumat, 10 Okt 2025</div>
-                            <div class="text-sm text-gray-500">14:00 - 14:30 WIB</div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900 font-medium">Telemedicine</div>
-                            <div class="text-sm text-gray-500 truncate w-40">Konsultasi hasil lab</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Lunas (Transfer)
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                Selesai
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-gray-600 hover:text-gray-900">Lihat Resep</a>
-                        </td>
-                    </tr>
+                    @empty
+                        
+                    @endforelse
+                
 
                     <!-- Tambahkan baris data lainnya di sini -->
                 </tbody>

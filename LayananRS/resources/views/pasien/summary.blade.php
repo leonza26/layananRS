@@ -32,10 +32,10 @@
 
                         <div class="ml-4">
                             <p class="font-semibold text-gray-900">
-                                {{ $nextAppointment->doctor->name }}
+                                {{ $nextAppointment->doctor->user->name }}
                             </p>
                             <p class="text-sm text-gray-600">
-                                {{ $nextAppointment->doctor->specialty ?? 'Dokter' }}
+                                {{ $nextAppointment->doctor->specialization ?? 'Dokter' }}
                             </p>
                         </div>
                     </div>

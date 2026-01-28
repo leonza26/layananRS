@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Pasien;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Socialite;
 use App\Http\Controllers\Controller;
@@ -31,6 +32,7 @@ class GoogleController extends Controller
                     'name' => $googleUser->name,
                     'email' => $googleUser->email,
                     'google_id' => $googleUser->id,
+                    'role' => 2, // default role pasien
                     'password' => Hash::make(uniqid()), // password random karena tidak dipakai
                     'email_verified_at' => now(), // Langsung verifikasi email (lihat bagian verifikasi)
                 ]);
@@ -45,17 +47,18 @@ class GoogleController extends Controller
 
             Auth::login($user);
 
-            // alihkan berdasarkan peran
-            switch ($user->role) {
-                case 0: // admin
-                    return redirect()->route('admin');
-                case 1: // dokter
-                    return redirect()->route('dokter');
-                case 2: // pasien
-                    return redirect()->route('pasien');
-                default:
-                    return redirect()->route('home');
-            }
+        //  buat pasien jika user role pasien dan belum punya data pasien
+                Pasien::firstOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'name' => $user->name,
+                        'phone_number' => null,
+                    ]
+                );
+            
+
+            // alihkan ke halaman loading agar animasi tampil (sama seperti login manual)
+            return redirect()->route('loading');
         } catch (\Exception $e) {
             throw $e;
             // return redirect('/login')->with('error', 'Gagal login dengan Google.');

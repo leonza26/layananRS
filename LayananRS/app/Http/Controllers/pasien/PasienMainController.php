@@ -40,7 +40,35 @@ class PasienMainController extends Controller
     // profile saya
     public function profileSaya()
     {
-        return view('pasien.profile');
+        $user = Auth::user();
+        $pasien = $user->pasien;
+    
+        return view('pasien.profile', compact('user', 'pasien'));
+    }
+
+    // update profile logic
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+        ]);
+
+        $user->update(['name' => $request->name]);
+
+        $user->pasien()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'name' => $request->name,
+                'phone_number' => $request->phone_number,
+                'address' => $request->address
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
     }
 
     // riwayat
@@ -252,6 +280,28 @@ class PasienMainController extends Controller
         }
 
         return view('pasien.payment', compact('appointment'));
+    }
+
+    // DETAIL APPOINTMENT (Menangani route pasien.appointment.show)
+    public function showAppointment($id)
+    {
+        $appointment = Appointment::with(['doctor.user', 'payment'])->findOrFail($id);
+
+        // Pastikan appointment ini milik user yang login
+        if ($appointment->patient_id !== Auth::user()->pasien->id) {
+            abort(403);
+        }
+
+        // Jika status masih pending, arahkan ke halaman pembayaran
+        if ($appointment->status == 'pending') {
+            return redirect()->route('pasien.booking.payment', $id);
+        }
+
+        // Jika sudah confirmed/completed, tampilkan view detail (Anda perlu membuat view ini)
+        // return view('pasien.detail_janjitemu', compact('appointment'));
+        
+        // Untuk sementara (jika view detail belum ada), kita bisa arahkan ke riwayat atau payment sebagai fallback
+        return view('pasien.payment', compact('appointment')); 
     }
 
     // cancel booking

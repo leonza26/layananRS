@@ -79,7 +79,9 @@ class DokterMainController extends Controller
 
 
     public function daftarJanjitemu(){
-        return view('Dokter.daftar_janjitemu');
+        // read appointment list
+        $appointments = \App\Models\Appointment::all();
+        return view('Dokter.daftar_janjitemu', compact('appointments'));
     }
 
     // riwayat pasien
