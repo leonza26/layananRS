@@ -12,6 +12,7 @@
         </div>
 
         <!-- Filter Status -->
+        <form action="{{ route('dokter.janji.pasien') }}" method="GET">
         <div class="mt-4 sm:mt-0 flex space-x-2">
             <select class="form-select text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 <option value="">Semua Status</option>
@@ -91,19 +92,44 @@
                                 <div class="text-sm text-gray-900 font-medium">{{ $appointment->complaint }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    {{ $appointment->payment->status }}
-                                </span>
+                                @if ($appointment->payment->status === 'pending')
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                        {{ $appointment->payment->status }}
+                                    </span>
+                                @elseif ($appointment->payment->status === 'paid')
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        {{ $appointment->payment->status }}
+                                    </span>
+                                @elseif ($appointment->payment->status === 'failed')
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                        {{ $appointment->payment->status }}
+                                    </span>
+                                @endif
+
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                    {{ $appointment->status }}
-                                </span>
+                                @if ($appointment->status === 'pending')
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                        {{ $appointment->status }}
+                                    </span>
+                                @elseif ($appointment->status === 'confirmed')
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                        {{ $appointment->status }}
+                                    </span>
+                                @elseif ($appointment->status === 'completed')
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        {{ $appointment->status }}
+                                    </span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                @if ($appointment->status === 'pending' && $appointment->payment?->status === 'success')
+                                @if ($appointment->status === 'pending' && $appointment->payment?->status === 'paid')
                                     <form action="{{ route('dokter.appointment.confirm', $appointment->id) }}"
                                         method="POST" class="inline">
                                         @csrf

@@ -106,7 +106,7 @@
             </h3>
 
             <div class="space-y-3">
-                <a href="{{ route('pasien.booking') }}"
+                <a href="{{ route('daftar.dokter') }}"
                     class="block w-full text-center px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600">
                     Booking Janji Temu Baru
                 </a>

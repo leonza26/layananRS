@@ -35,45 +35,33 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr>
+                    @forelse ($appointments as $appointment)
+                        <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
                                     <img class="h-10 w-10 rounded-full" src="https://placehold.co/100x100/E2E8F0/4A5568?text=AS" alt="Avatar">
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Andi Saputra</div>
-                                    <div class="text-sm text-gray-500">andi.s@example.com</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $appointment->patient->user->name }}</div>
+                                    <div class="text-sm text-gray-500">{{ $appointment->patient->user->email }}</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15-05-1990</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">081234567890</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07-10-2025</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $appointment->patient->date_of_birth }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $appointment->patient->phone_number }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($appointment->appointment_time)->translatedFormat('d F Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="#" class="text-indigo-600 hover:text-indigo-900">Lihat Riwayat</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full" src="https://placehold.co/100x100/E2E8F0/4A5568?text=SA" alt="Avatar">
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Siti Aminah</div>
-                                    <div class="text-sm text-gray-500">siti.a@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">22-11-1985</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">089876543210</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">03-10-2025</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" class="text-indigo-600 hover:text-indigo-900">Lihat Riwayat</a>
-                        </td>
-                    </tr>
-                    <!-- Data pasien lainnya -->
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                Tidak ada pasien yang ditemukan.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

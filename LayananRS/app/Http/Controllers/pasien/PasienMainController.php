@@ -53,6 +53,7 @@ class PasienMainController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'date_of_birth' => 'nullable|date',
             'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
         ]);
@@ -63,6 +64,7 @@ class PasienMainController extends Controller
             ['user_id' => $user->id],
             [
                 'name' => $request->name,
+                'date_of_birth' => $request->date_of_birth,
                 'phone_number' => $request->phone_number,
                 'address' => $request->address
             ]

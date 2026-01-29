@@ -98,7 +98,7 @@ class DokterMainController extends Controller
             abort(403);
         }
 
-        if ($appointment->payment?->status !== 'success') {
+        if ($appointment->payment?->status !== 'paid') {
             return back()->with('error', 'Pembayaran belum selesai.');
         }
 
@@ -126,7 +126,14 @@ class DokterMainController extends Controller
     // riwayat pasien
     public function riwayatPasien()
     {
-        return view('Dokter.riwayat_pasien');
+        $dokter = Dokter::where('user_id', Auth::id())->firstOrFail();
+
+        $appointments = Appointment::with(['patient.user', 'payment'])
+            ->where('doctor_id', $dokter->id)
+            ->orderBy('appointment_time', 'asc')
+            ->get();
+            
+        return view('Dokter.riwayat_pasien', compact('appointments'));
     }
 
     // profile saya

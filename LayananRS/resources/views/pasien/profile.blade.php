@@ -28,6 +28,10 @@
                     <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
+                    <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
+                    <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth', $pasien->date_of_birth ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
                     <label for="phone_number" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
                     <input type="text" name="phone_number" id="phone_number" value="{{ old('phone_number', $pasien->phone_number ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
